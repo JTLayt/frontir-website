@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frontir — Portfolio Intelligence API</title>
+  <meta name="description" content="One POST request. Efficient Frontier optimisation across ASX200 equities, Ledoit-Wolf covariance, and an AI-generated investment narrative — compliance-ready." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', '"Fira Code"', 'Consolas', 'monospace'],
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:           #080808;
+      --surface:      #0e0e0e;
+      --card:         #101010;
+      --border:       #1c1c1c;
+      --border-hi:    #2a2a2a;
+      --text:         #e4e4e4;
+      --muted:        #505050;
+      --subtle:       #2e2e2e;
+      --blue:         #3b82f6;
+      --blue-dim:     #1d4ed8;
+      --green:        #10b981;
+      --amber:        #f59e0b;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { background: var(--bg); }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ── Grid background ─────────────────────────────────────────── */
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+      background-size: 56px 56px;
+    }
+
+    /* ── Hero glow ───────────────────────────────────────────────── */
+    .hero-glow {
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 500px;
+      background: radial-gradient(ellipse at top, rgba(59,130,246,0.10) 0%, transparent 68%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Gradient text ───────────────────────────────────────────── */
+    .gradient-text {
+      background: linear-gradient(130deg, #ffffff 30%, #6b7fbe 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Terminal / code window ──────────────────────────────────── */
+    .terminal {
+      background: #070707;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .terminal-bar {
+      background: #0c0c0c;
+      border-bottom: 1px solid var(--border);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    .terminal-body {
+      padding: 20px 24px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 12.5px;
+      line-height: 1.85;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* ── Syntax colours ──────────────────────────────────────────── */
+    .k  { color: #93c5fd; }  /* key    */
+    .s  { color: #86efac; }  /* string */
+    .n  { color: #fbbf24; }  /* number */
+    .b  { color: #f472b6; }  /* bool   */
+    .p  { color: #3d4f5c; }  /* punct  */
+    .c  { color: #2d3a42; font-style: italic; } /* comment */
+    .cm { color: #4ade80; font-weight: 500; }  /* comment accent */
+
+    /* ── Cards ───────────────────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    /* ── Metric badge ────────────────────────────────────────────── */
+    .metric {
+      background: rgba(255,255,255,0.015);
+      border: 1px solid var(--border-hi);
+      border-radius: 6px;
+      padding: 14px 18px;
+      text-align: center;
+    }
+
+    /* ── Pill / chip ─────────────────────────────────────────────── */
+    .chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: #0a0a0a;
+      border: 1px solid var(--border);
+      color: #3d4f5c;
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* ── Pulse dot ───────────────────────────────────────────────── */
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+    .pulse { animation: pulseDot 2.2s ease-in-out infinite; }
+
+    /* ── Scroll fade-up ──────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up {
+      opacity: 0;
+      animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    .d1 { animation-delay: 0.05s; }
+    .d2 { animation-delay: 0.15s; }
+    .d3 { animation-delay: 0.25s; }
+    .d4 { animation-delay: 0.38s; }
+    .d5 { animation-delay: 0.50s; }
+
+    /* ── Nav link ────────────────────────────────────────────────── */
+    nav a { transition: color 0.15s; }
+    nav a:hover { color: #e4e4e4 !important; }
+
+    /* ── Scrollbar ───────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #060606; }
+    ::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+
+    /* ── Frontier SVG curve ──────────────────────────────────────── */
+    .frontier-curve {
+      stroke-dasharray: 600;
+      stroke-dashoffset: 600;
+      animation: drawCurve 2.5s cubic-bezier(0.16,1,0.3,1) 0.6s forwards;
+    }
+    @keyframes drawCurve {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* ── Divider ─────────────────────────────────────────────────── */
+    hr { border-color: var(--border); }
+  </style>
+</head>
+
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════════════════════════ -->
+<nav class="fixed top-0 left-0 right-0 z-50 border-b border-[#1c1c1c] bg-[#080808]/85 backdrop-blur-md">
+  <div class="max-w-6xl mx-auto px-6 flex items-center justify-between h-[54px]">
+
+    <!-- Wordmark -->
+    <a href="/" class="flex items-center gap-2.5 no-underline">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <rect width="22" height="22" rx="5" fill="#1d4ed8"/>
+        <path d="M6 5h8M6 9.5h5.5" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M6 14l3 3 4-5 3 2.5" stroke="#93c5fd" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="font-semibold text-white tracking-[-0.02em] text-[15px]">Frontir</span>
+      <span class="hidden sm:block font-mono text-[10px] text-[#2a2a2a] border border-[#1c1c1c] px-1.5 py-0.5 rounded">v1.0</span>
+    </a>
+
+    <!-- Links -->
+    <div class="hidden md:flex items-center gap-7 text-[13px] text-[#505050]">
+      <a href="#how-it-works">How it Works</a>
+      <a href="#features">Features</a>
+      <a href="#developer">API</a>
+      <a href="/docs">Docs</a>
+    </div>
+
+    <!-- CTA -->
+    <a href="/docs" class="text-[13px] font-semibold bg-white text-black px-4 py-[7px] rounded-[6px] hover:bg-[#e8e8e8] transition-colors">
+      Get Started
+    </a>
+  </div>
+</nav>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     HERO
+════════════════════════════════════════════════════════════════ -->
+<section class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-[54px] grid-bg">
+
+  <div class="hero-glow"></div>
+
+  <!-- Efficient Frontier SVG (decorative) -->
+  <svg class="absolute bottom-0 left-0 right-0 w-full opacity-[0.04] pointer-events-none" height="280" viewBox="0 0 1200 280" preserveAspectRatio="none">
+    <path class="frontier-curve" d="M0 280 Q200 260 400 180 Q600 90 750 60 Q900 40 1200 30" stroke="#3b82f6" stroke-width="2" fill="none"/>
+    <path d="M0 280 Q200 260 400 180 Q600 90 750 60 Q900 40 1200 30 L1200 280 Z" fill="url(#heroGrad)" opacity="0.5"/>
+    <defs>
+      <linearGradient id="heroGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="max-w-4xl mx-auto px-6 py-28 text-center relative z-10">
+
+    <!-- Status badge -->
+    <div class="fade-up d1 inline-flex items-center gap-2 border border-[#1c1c1c] rounded-full px-4 py-1.5 text-[11px] text-[#404040] mb-10 font-mono">
+      <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full pulse"></span>
+      ASX market data · refreshed 4:15 PM AEDT daily
+    </div>
+
+    <!-- Headline -->
+    <h1 class="fade-up d2 text-[48px] md:text-[72px] font-semibold text-white tracking-[-0.035em] leading-[1.02] mb-7">
+      The Intelligence Layer<br />
+      <span class="gradient-text">for Modern Portfolios.</span>
+    </h1>
+
+    <!-- Sub -->
+    <p class="fade-up d3 text-[16px] md:text-[17px] text-[#505050] max-w-[520px] mx-auto mb-12 leading-[1.7]">
+      One POST. Efficient Frontier optimisation across ASX200 equities,
+      Ledoit-Wolf covariance shrinkage, and an AI-generated investment
+      narrative — compliance metadata included.
+    </p>
+
+    <!-- CTAs -->
+    <div class="fade-up d4 flex flex-col sm:flex-row items-center justify-center gap-3 mb-24">
+      <a href="/docs" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-black text-[13px] font-semibold px-6 py-[10px] rounded-[6px] hover:bg-[#ebebeb] transition-colors">
+        Read the Docs
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 6.5h11M7 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="https://github.com" class="w-full sm:w-auto flex items-center justify-center gap-2 border border-[#1c1c1c] text-[#666] text-[13px] font-medium px-6 py-[10px] rounded-[6px] hover:border-[#2a2a2a] hover:text-white transition-colors">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        View Source
+      </a>
+    </div>
+
+    <!-- Live metrics strip -->
+    <div class="fade-up d5 grid grid-cols-3 gap-3 max-w-[420px] mx-auto">
+      <div class="metric">
+        <div class="text-emerald-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">1.92</div>
+        <div class="text-[#383838] text-[11px]">Sharpe Ratio</div>
+      </div>
+      <div class="metric">
+        <div class="text-blue-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">11.4%</div>
+        <div class="text-[#383838] text-[11px]">Exp. Return</div>
+      </div>
+      <div class="metric">
+        <div class="text-amber-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">14.2%</div>
+        <div class="text-[#383838] text-[11px]">Volatility</div>
+      </div>
+    </div>
+    <p class="font-mono text-[11px] text-[#222] mt-3">// sample · BHP.AX · CBA.AX · CSL.AX</p>
+
+  </div>
+
+  <!-- Scroll cue -->
+  <div class="absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-[#252525]">
+    <span class="font-mono text-[10px]">scroll</span>
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 3.5l4 4 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     STATS BAR
+════════════════════════════════════════════════════════════════ -->
+<div class="border-y border-[#1c1c1c] bg-[#0a0a0a] py-4">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="flex flex-wrap items-center justify-center md:justify-between gap-6 text-[11px] font-mono text-[#303030]">
+      <span>20 ASX equities · top market cap</span>
+      <span class="hidden md:block text-[#1c1c1c]">|</span>
+      <span>504 trading days · 2-year horizon</span>
+      <span class="hidden md:block text-[#1c1c1c]">|</span>
+      <span>Ledoit-Wolf covariance shrinkage</span>
+      <span class="hidden md:block text-[#1c1c1c]">|</span>
+      <span>GPT-4o-mini narrative generation</span>
+      <span class="hidden md:block text-[#1c1c1c]">|</span>
+      <span>AU 2026 compliance metadata</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     HOW IT WORKS
+════════════════════════════════════════════════════════════════ -->
+<section id="how-it-works" class="py-28 border-b border-[#1c1c1c]">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="mb-16">
+      <p class="text-[11px] font-mono text-[#2d2d2d] uppercase tracking-[0.14em] mb-3">01 — How it Works</p>
+      <h2 class="text-[32px] md:text-[42px] font-semibold text-white tracking-[-0.03em] mb-5 leading-tight">
+        One endpoint.<br/>Complete intelligence.
+      </h2>
+      <p class="text-[#505050] max-w-[500px] text-[15px] leading-relaxed">
+        POST your portfolio. Frontir loads two years of adjusted daily close
+        data, runs the Efficient Frontier solver, then passes the result to
+        GPT-4o-mini for a structured narrative — all in a single response.
+      </p>
+    </div>
+
+    <!-- Pipeline steps -->
+    <div class="flex flex-wrap gap-0 mb-14 items-start">
+
+      <div class="flex flex-col items-center text-center w-[148px]">
+        <div class="w-8 h-8 rounded-full border border-[#1c1c1c] flex items-center justify-center font-mono text-[11px] text-[#3d3d3d] mb-3">01</div>
+        <p class="text-[12px] text-[#454545] leading-relaxed">POST tickers + risk&nbsp;tolerance</p>
+      </div>
+
+      <div class="flex items-start pt-4 mx-1">
+        <div class="w-10 h-px bg-[#1c1c1c] mt-0"></div>
+        <svg width="7" height="7" viewBox="0 0 7 7" fill="none" class="-ml-0.5"><path d="M0 3.5h6M3 1l3 2.5L3 6" stroke="#2a2a2a" stroke-width="1" stroke-linecap="round"/></svg>
+      </div>
+
+      <div class="flex flex-col items-center text-center w-[148px]">
+        <div class="w-8 h-8 rounded-full border border-[#1c1c1c] flex items-center justify-center font-mono text-[11px] text-[#3d3d3d] mb-3">02</div>
+        <p class="text-[12px] text-[#454545] leading-relaxed">Cache check · SHA-256 canonical key · 5 min TTL</p>
+      </div>
+
+      <div class="flex items-start pt-4 mx-1">
+        <div class="w-10 h-px bg-[#1c1c1c]"></div>
+        <svg width="7" height="7" viewBox="0 0 7 7" fill="none" class="-ml-0.5"><path d="M0 3.5h6M3 1l3 2.5L3 6" stroke="#2a2a2a" stroke-width="1" stroke-linecap="round"/></svg>
+      </div>
+
+      <div class="flex flex-col items-center text-center w-[148px]">
+        <div class="w-8 h-8 rounded-full border border-[#1c1c1c] flex items-center justify-center font-mono text-[11px] text-[#3d3d3d] mb-3">03</div>
+        <p class="text-[12px] text-[#454545] leading-relaxed">Ledoit-Wolf cov. → Efficient Frontier → max Sharpe</p>
+      </div>
+
+      <div class="flex items-start pt-4 mx-1">
+        <div class="w-10 h-px bg-[#1c1c1c]"></div>
+        <svg width="7" height="7" viewBox="0 0 7 7" fill="none" class="-ml-0.5"><path d="M0 3.5h6M3 1l3 2.5L3 6" stroke="#2a2a2a" stroke-width="1" stroke-linecap="round"/></svg>
+      </div>
+
+      <div class="flex flex-col items-center text-center w-[148px]">
+        <div class="w-8 h-8 rounded-full border border-blue-900 flex items-center justify-center font-mono text-[11px] text-blue-500 mb-3">04</div>
+        <p class="text-[12px] text-[#454545] leading-relaxed">GPT-4o-mini generates Risk · Opportunity · Action</p>
+      </div>
+
+    </div>
+
+    <!-- Code split: request | response -->
+    <div class="grid md:grid-cols-2 gap-4">
+
+      <!-- Request -->
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot" style="background:#ff5f57"></div>
+          <div class="dot" style="background:#febc2e"></div>
+          <div class="dot" style="background:#28c840"></div>
+          <span class="ml-3 text-[11px] text-[#2e2e2e] font-mono">POST /api/v1/optimize</span>
+        </div>
+        <div class="terminal-body text-[#3d4f5c]"><span class="c">// Request body</span>
+<span class="p">{</span>
+  <span class="k">"portfolio"</span><span class="p">: [</span>
+    <span class="p">{</span>
+      <span class="k">"ticker"</span><span class="p">:</span> <span class="s">"BHP.AX"</span><span class="p">,</span>
+      <span class="k">"amount"</span><span class="p">:</span> <span class="n">15000</span><span class="p">,</span>
+      <span class="k">"max_weight"</span><span class="p">:</span> <span class="n">0.40</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="k">"ticker"</span><span class="p">:</span> <span class="s">"CBA.AX"</span><span class="p">,</span>
+      <span class="k">"amount"</span><span class="p">:</span> <span class="n">10000</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="k">"ticker"</span><span class="p">:</span> <span class="s">"CSL.AX"</span><span class="p">,</span>
+      <span class="k">"amount"</span><span class="p">:</span> <span class="n">8000</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="k">"risk_tolerance"</span><span class="p">:</span>    <span class="n">0.7</span><span class="p">,</span>
+  <span class="k">"include_ai_summary"</span><span class="p">:</span> <span class="b">true</span><span class="p">,</span>
+  <span class="k">"jurisdiction"</span><span class="p">:</span>       <span class="s">"AU"</span>
+<span class="p">}</span>
+</div>
+      </div>
+
+      <!-- Response -->
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot" style="background:#ff5f57"></div>
+          <div class="dot" style="background:#febc2e"></div>
+          <div class="dot" style="background:#28c840"></div>
+          <span class="ml-3 text-[11px] text-[#2e2e2e] font-mono">200 OK · 143ms</span>
+          <span class="ml-auto font-mono text-[10px] text-emerald-700 flex items-center gap-1.5">
+            <span class="w-1 h-1 rounded-full bg-emerald-500 pulse inline-block"></span>LIVE
+          </span>
+        </div>
+        <div class="terminal-body text-[#3d4f5c]"><span class="c">// Response</span>
+<span class="p">{</span>
+  <span class="k">"optimized_weights"</span><span class="p">: {</span>
+    <span class="k">"BHP.AX"</span><span class="p">:</span> <span class="n">0.40</span><span class="p">,</span>
+    <span class="k">"CBA.AX"</span><span class="p">:</span> <span class="n">0.35</span><span class="p">,</span>
+    <span class="k">"CSL.AX"</span><span class="p">:</span> <span class="n">0.25</span>
+  <span class="p">},</span>
+  <span class="k">"metrics"</span><span class="p">: {</span>
+    <span class="k">"expected_return_pct"</span><span class="p">:</span> <span class="s">"11.4%"</span><span class="p">,</span>
+    <span class="k">"volatility_pct"</span><span class="p">:</span>      <span class="s">"14.2%"</span><span class="p">,</span>
+    <span class="k">"sharpe_ratio"</span><span class="p">:</span>         <span class="n">1.92</span>
+  <span class="p">},</span>
+  <span class="k">"ai_summary"</span><span class="p">:</span> <span class="s">"- **Risk:** Materials overweight..."</span><span class="p">,</span>
+  <span class="k">"metadata"</span><span class="p">: {</span>
+    <span class="k">"optimization_engine"</span><span class="p">:</span> <span class="s">"PyPortfolioOpt/1.5.5"</span><span class="p">,</span>
+    <span class="k">"ai_model"</span><span class="p">:</span>            <span class="s">"gpt-4o-mini"</span><span class="p">,</span>
+    <span class="k">"api_version"</span><span class="p">:</span>         <span class="s">"1.0.0"</span>
+  <span class="p">},</span>
+  <span class="k">"disclaimer"</span><span class="p">:</span> <span class="s">"General information only..."</span>
+<span class="p">}</span>
+</div>
+      </div>
+
+    </div><!-- /grid -->
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     FEATURES
+════════════════════════════════════════════════════════════════ -->
+<section id="features" class="py-28 border-b border-[#1c1c1c]">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="mb-16">
+      <p class="text-[11px] font-mono text-[#2d2d2d] uppercase tracking-[0.14em] mb-3">02 — Capabilities</p>
+      <h2 class="text-[32px] md:text-[42px] font-semibold text-white tracking-[-0.03em] leading-tight">
+        Not just optimisation.<br/>Portfolio intelligence.
+      </h2>
+    </div>
+
+    <!-- Top row: 3 columns -->
+    <div class="grid md:grid-cols-3 gap-4 mb-4">
+
+      <!-- ── AI Narratives ────────────────────────────────────────── -->
+      <div class="card p-7">
+        <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#404040]">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M2 4h12M2 7.5h9M2 11h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            <circle cx="13.5" cy="11.5" r="2" stroke="#3b82f6" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-white mb-2 text-[15px] tracking-[-0.01em]">AI-Driven Narratives</h3>
+        <p class="text-[13px] text-[#4a4a4a] leading-relaxed mb-6">
+          Every optimisation ships with a structured GPT-4o-mini narrative.
+          The model receives only the math output — never raw news — and
+          must produce exactly three bullets at <code class="font-mono text-[11px] text-[#555]">temperature=0.3</code>.
+          No fabricated numbers. Returns <code class="font-mono text-[11px] text-[#555]">null</code> gracefully
+          if the key is missing.
+        </p>
+        <div class="border border-[#161616] rounded-[6px] p-4 font-mono text-[11.5px] leading-[1.9] bg-[#070707]">
+          <div class="text-[#222] mb-1">// ai_summary output</div>
+          <div><span class="text-blue-500">Risk:</span> <span class="text-[#404040]">Commodities at cycle peak...</span></div>
+          <div><span class="text-emerald-500">Opportunity:</span> <span class="text-[#404040]">Domestic rate tailwind...</span></div>
+          <div><span class="text-amber-500">Action:</span> <span class="text-[#404040]">Trim BHP 5% on strength...</span></div>
+        </div>
+      </div>
+
+      <!-- ── ASX Integration ─────────────────────────────────────── -->
+      <div class="card p-7">
+        <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#404040]">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M1 13.5L5 8l3 3 4-5.5 3 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-white mb-2 text-[15px] tracking-[-0.01em]">ASX-Native Data Layer</h3>
+        <p class="text-[13px] text-[#4a4a4a] leading-relaxed mb-6">
+          Two years of adjusted daily close data for ASX200's top 20 equities
+          by market capitalisation. Scraped via YahooQuery, stored in SQLite,
+          and refreshed at 4:15&nbsp;PM AEDT every weekday after market close.
+          Partial-failure tolerance — one stale ticker won't break the response.
+        </p>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="chip">BHP</span>
+          <span class="chip">CBA</span>
+          <span class="chip">CSL</span>
+          <span class="chip">NAB</span>
+          <span class="chip">WBC</span>
+          <span class="chip">ANZ</span>
+          <span class="chip">WES</span>
+          <span class="chip">MQG</span>
+          <span class="chip">WOW</span>
+          <span class="chip">RIO</span>
+          <span class="chip">FMG</span>
+          <span class="chip">TLS</span>
+          <span class="font-mono text-[10px] text-[#282828] px-2 py-0.5">+8 more</span>
+        </div>
+      </div>
+
+      <!-- ── MPT Math ────────────────────────────────────────────── -->
+      <div class="card p-7">
+        <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#404040]">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M2 14.5L5 9l3.5 3.5L12 5l3 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="14.5" cy="3.5" r="1.5" fill="#3b82f6"/>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-white mb-2 text-[15px] tracking-[-0.01em]">Modern Portfolio Theory</h3>
+        <p class="text-[13px] text-[#4a4a4a] leading-relaxed mb-6">
+          Powered by PyPortfolioOpt 1.5.5 — Ledoit-Wolf covariance shrinkage
+          improves stability with short histories. Objective is configurable
+          via <code class="font-mono text-[11px] text-[#555]">risk_tolerance</code>. Per-ticker weight
+          bounds passed directly to the convex solver.
+        </p>
+        <div class="space-y-2.5 font-mono text-[11.5px]">
+          <div class="flex items-center justify-between">
+            <span class="text-[#333]">risk_tolerance: 0.0</span>
+            <span class="text-[#404040]">→ min volatility</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-blue-500">risk_tolerance: 0.7</span>
+            <span class="text-blue-400">→ blended target ←</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-[#333]">risk_tolerance: 1.0</span>
+            <span class="text-[#404040]">→ max Sharpe</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom row: 2 wider cards -->
+    <div class="grid md:grid-cols-2 gap-4">
+
+      <!-- ── Compliance ──────────────────────────────────────────── -->
+      <div class="card p-7 flex gap-6">
+        <div class="flex-none w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center text-[#404040]">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <rect x="2.5" y="1" width="11" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+            <path d="M5 5.5h6M5 8.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M5 12l2 1.5L11 11" stroke="#10b981" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="font-semibold text-white mb-2 text-[15px] tracking-[-0.01em]">Compliance-Ready Responses</h3>
+          <p class="text-[13px] text-[#4a4a4a] leading-relaxed">
+            Every response carries jurisdiction-aware disclaimers (AU&nbsp;2026), structured
+            <code class="font-mono text-[11px] text-[#555]">metadata</code> with engine version and data provenance,
+            and a <code class="font-mono text-[11px] text-[#555]">calculated_at</code> ISO timestamp.
+            Designed to drop straight into adviser workflow tools without
+            additional wrapping.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Caching ─────────────────────────────────────────────── -->
+      <div class="card p-7 flex gap-6">
+        <div class="flex-none w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center text-[#404040]">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/>
+            <path d="M8 5v3l2.5 2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="font-semibold text-white mb-2 text-[15px] tracking-[-0.01em]">SHA-256 Request Caching</h3>
+          <p class="text-[13px] text-[#4a4a4a] leading-relaxed">
+            Identical requests are served from a 5-minute in-memory TTL cache.
+            The cache key is a canonical SHA-256 hash of the request — parameter
+            order differences don't break hits. P95 latency under 200ms.
+            Upgradeable to Redis for multi-worker deployments.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     DEVELOPER FIRST
+════════════════════════════════════════════════════════════════ -->
+<section id="developer" class="py-28 border-b border-[#1c1c1c]">
+  <div class="max-w-6xl mx-auto px-6">
+
+    <div class="grid md:grid-cols-2 gap-16 items-start">
+
+      <!-- Left: copy -->
+      <div>
+        <p class="text-[11px] font-mono text-[#2d2d2d] uppercase tracking-[0.14em] mb-3">03 — Developer First</p>
+        <h2 class="text-[32px] md:text-[42px] font-semibold text-white tracking-[-0.03em] leading-tight mb-6">
+          Built for engineers.<br/>Trusted by advisers.
+        </h2>
+        <p class="text-[15px] text-[#505050] leading-relaxed mb-10">
+          Frontir is API-first by design. Swagger docs live at
+          <code class="font-mono text-[12px] bg-[#0e0e0e] border border-[#1c1c1c] text-[#666] px-1.5 py-0.5 rounded">/docs</code>
+          — interactive, type-safe, and runnable from the browser.
+          Pydantic&nbsp;v2 validates every request so integrations fail
+          fast, not silently.
+        </p>
+
+        <div class="space-y-6 mb-10">
+
+          <div class="flex items-start gap-4">
+            <div class="flex-none w-[26px] h-[26px] rounded-full border border-[#1c1c1c] flex items-center justify-center mt-0.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
+            </div>
+            <div>
+              <p class="text-[14px] text-white font-medium mb-0.5">OpenAPI 3.1 schema</p>
+              <p class="text-[12px] text-[#454545]">Machine-readable spec for client codegen in any language — Python, TypeScript, Swift.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4">
+            <div class="flex-none w-[26px] h-[26px] rounded-full border border-[#1c1c1c] flex items-center justify-center mt-0.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
+            </div>
+            <div>
+              <p class="text-[14px] text-white font-medium mb-0.5">Structured JSON logging</p>
+              <p class="text-[12px] text-[#454545]">structlog in production. Ship directly to Datadog, CloudWatch, or Loki without transformation.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4">
+            <div class="flex-none w-[26px] h-[26px] rounded-full border border-[#1c1c1c] flex items-center justify-center mt-0.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
+            </div>
+            <div>
+              <p class="text-[14px] text-white font-medium mb-0.5">Graceful partial failures</p>
+              <p class="text-[12px] text-[#454545]">Tickers with insufficient history return actionable warnings, not HTTP 500. The optimisation continues with the remaining assets.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4">
+            <div class="flex-none w-[26px] h-[26px] rounded-full border border-[#1c1c1c] flex items-center justify-center mt-0.5">
+              <div class="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
+            </div>
+            <div>
+              <p class="text-[14px] text-white font-medium mb-0.5">Self-hostable · MIT licensed</p>
+              <p class="text-[12px] text-[#454545]">Deploy alongside your existing stack. No external dependency for the core engine — AI summaries are opt-in via <code class="font-mono text-[11px]">OPENAI_API_KEY</code>.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <a href="/docs" class="inline-flex items-center gap-2 border border-[#1c1c1c] text-[#555] text-[13px] font-medium px-5 py-[9px] rounded-[6px] hover:border-blue-900 hover:text-blue-400 transition-colors">
+          Open API Reference
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1.5 10.5l9-9M10.5 10.5V1.5H1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <!-- Right: curl -->
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot" style="background:#ff5f57"></div>
+          <div class="dot" style="background:#febc2e"></div>
+          <div class="dot" style="background:#28c840"></div>
+          <span class="ml-3 text-[11px] text-[#2e2e2e] font-mono">shell</span>
+        </div>
+        <div class="terminal-body text-[12px]"><span class="text-[#2a2a2a]">$</span> <span class="text-[#505050]">curl</span> <span class="s">-X POST</span> https://api.frontir.io/api/v1/optimize \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{</span>
+    <span class="k">"portfolio"</span>: [
+      {<span class="k">"ticker"</span>: <span class="s">"CBA.AX"</span>, <span class="k">"amount"</span>: <span class="n">20000</span>},
+      {<span class="k">"ticker"</span>: <span class="s">"CSL.AX"</span>, <span class="k">"amount"</span>: <span class="n">15000</span>},
+      {<span class="k">"ticker"</span>: <span class="s">"WES.AX"</span>, <span class="k">"amount"</span>: <span class="n">10000</span>}
+    ],
+    <span class="k">"risk_tolerance"</span>:    <span class="n">0.5</span>,
+    <span class="k">"include_ai_summary"</span>: <span class="b">true</span>,
+    <span class="k">"jurisdiction"</span>:       <span class="s">"AU"</span>
+  <span class="s">'}</span>
+
+<span class="c"># ──────────────────────────────────────────</span>
+<span class="c"># ← 200 OK in ~143ms</span>
+<span class="c"># ← Weights · Metrics · AI narrative</span>
+<span class="c"># ← Compliance metadata · Disclaimer</span>
+<span class="c"># ──────────────────────────────────────────</span>
+
+<span class="cm">✓</span> <span class="text-[#2a3a2a]">sharpe_ratio: 1.92</span>
+<span class="cm">✓</span> <span class="text-[#2a3a2a]">ai_summary generated</span>
+<span class="cm">✓</span> <span class="text-[#2a3a2a]">disclaimer included</span>
+</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     ROADMAP STRIP  (subtle, enterprise credibility)
+════════════════════════════════════════════════════════════════ -->
+<section class="py-20 border-b border-[#1c1c1c] bg-[#0a0a0a]">
+  <div class="max-w-6xl mx-auto px-6">
+    <p class="text-[11px] font-mono text-[#2a2a2a] uppercase tracking-[0.14em] mb-10">Architecture · Enterprise Path</p>
+    <div class="grid md:grid-cols-4 gap-4">
+
+      <div class="border border-[#141414] rounded-[6px] p-5">
+        <p class="text-[11px] font-mono text-[#252525] mb-2">Current</p>
+        <p class="text-[13px] font-medium text-[#383838] mb-1">SQLite + in-process</p>
+        <p class="text-[12px] text-[#2a2a2a]">YahooQuery · 20 ASX tickers · single worker</p>
+      </div>
+
+      <div class="border border-[#141414] rounded-[6px] p-5">
+        <p class="text-[11px] font-mono text-[#1e4a2e] mb-2">v2 target</p>
+        <p class="text-[13px] font-medium text-[#3d6b4a] mb-1">PostgreSQL + TimescaleDB</p>
+        <p class="text-[12px] text-[#2a3a2a]">Time-series optimised, shared Redis cache</p>
+      </div>
+
+      <div class="border border-[#141414] rounded-[6px] p-5">
+        <p class="text-[11px] font-mono text-[#252525] mb-2">Data</p>
+        <p class="text-[13px] font-medium text-[#383838] mb-1">Incremental append</p>
+        <p class="text-[12px] text-[#2a2a2a]">Daily delta only · corporate actions table</p>
+      </div>
+
+      <div class="border border-[#141414] rounded-[6px] p-5">
+        <p class="text-[11px] font-mono text-[#252525] mb-2">Scale</p>
+        <p class="text-[13px] font-medium text-[#383838] mb-1">Global equities</p>
+        <p class="text-[12px] text-[#2a2a2a]">Polygon.io · Celery/Redis · 1000+ tickers</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     CTA BANNER
+════════════════════════════════════════════════════════════════ -->
+<section class="py-28 grid-bg relative overflow-hidden">
+  <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03]">
+    <svg width="900" height="400" viewBox="0 0 900 400" fill="none">
+      <path d="M0 350 Q150 300 300 200 Q450 80 600 50 Q750 30 900 20" stroke="#3b82f6" stroke-width="3" fill="none"/>
+    </svg>
+  </div>
+  <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+    <h2 class="text-[32px] md:text-[48px] font-semibold text-white tracking-[-0.03em] mb-5 leading-tight">
+      Start optimising<br/>in minutes.
+    </h2>
+    <p class="text-[#505050] text-[16px] mb-10 max-w-md mx-auto">
+      Self-hostable. MIT-licensed. No API key required
+      for the core Efficient Frontier engine.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+      <a href="/docs" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-black text-[13px] font-semibold px-7 py-[11px] rounded-[6px] hover:bg-[#ebebeb] transition-colors">
+        Read the Docs →
+      </a>
+      <a href="https://github.com" class="w-full sm:w-auto text-[13px] text-[#505050] font-medium px-7 py-[11px] rounded-[6px] border border-[#1c1c1c] hover:border-[#2a2a2a] hover:text-white transition-colors">
+        View on GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════════════════ -->
+<footer class="border-t border-[#1c1c1c] py-10 bg-[#080808]">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+
+    <div class="flex items-center gap-2.5">
+      <svg width="18" height="18" viewBox="0 0 22 22" fill="none">
+        <rect width="22" height="22" rx="5" fill="#1d4ed8"/>
+        <path d="M6 5h8M6 9.5h5.5" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M6 14l3 3 4-5 3 2.5" stroke="#93c5fd" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="font-mono text-[12px] text-[#2a2a2a]">Frontir © 2026</span>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center gap-5 text-[11px] text-[#2a2a2a] font-mono">
+      <a href="/docs"         class="hover:text-[#555] transition-colors">Docs</a>
+      <a href="/api/v1/health" class="hover:text-[#555] transition-colors">Health</a>
+      <a href="https://github.com" class="hover:text-[#555] transition-colors">GitHub</a>
+      <span class="text-[#181818]">·</span>
+      <span>PyPortfolioOpt · FastAPI · GPT-4o-mini</span>
+    </div>
+
+  </div>
+</footer>
+
+<script>
+  // Scroll-triggered fade-up for off-screen sections
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.scroll-fade').forEach((el, i) => {
+          el.style.animationDelay = (i * 0.08) + 's';
+          el.classList.add('fade-up');
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('section').forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
