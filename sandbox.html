@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frontir — Live Sandbox</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'Consolas', 'monospace'],
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Zalando+Sans+Expanded:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #080808;
+      color: #e4e4e4;
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* ── Inputs & select ─────────────────────────────────────────── */
+    input[type="number"],
+    select {
+      background: #060606;
+      border: 1px solid #1c1c1c;
+      color: #e4e4e4;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      border-radius: 5px;
+      padding: 7px 10px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s;
+    }
+    input[type="number"]:focus,
+    select:focus { border-color: #2e2e2e; }
+    input::placeholder { color: #2e2e2e; }
+    select option    { background: #0a0a0a; }
+
+    /* ── Range slider ────────────────────────────────────────────── */
+    input[type="range"] {
+      -webkit-appearance: none;
+      background: transparent;
+      border: none;
+      padding: 0;
+      width: 100%;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-track {
+      background: #1a1a1a;
+      height: 2px;
+      border-radius: 2px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: #3b82f6;
+      margin-top: -6px;
+      cursor: pointer;
+    }
+    input[type="range"]::-moz-range-track { background: #1a1a1a; height: 2px; border-radius: 2px; }
+    input[type="range"]::-moz-range-thumb  { width: 14px; height: 14px; border-radius: 50%; background: #3b82f6; border: none; }
+
+    /* ── Checkbox ────────────────────────────────────────────────── */
+    input[type="checkbox"] {
+      width: 14px; height: 14px;
+      accent-color: #3b82f6;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    /* ── Section card ────────────────────────────────────────────── */
+    .card {
+      background: #0c0c0c;
+      border: 1px solid #1c1c1c;
+      border-radius: 8px;
+    }
+
+    /* ── Portfolio row ───────────────────────────────────────────── */
+    .p-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid #111;
+    }
+    .p-row:last-child { border-bottom: none; }
+
+    /* ── Weight bar ──────────────────────────────────────────────── */
+    .bar-fill { transition: width 0.85s cubic-bezier(0.16,1,0.3,1); }
+
+    /* ── Spinner ─────────────────────────────────────────────────── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      display: inline-block;
+      width: 13px; height: 13px;
+      border: 1.5px solid #2a2a2a;
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+      flex-shrink: 0;
+    }
+
+    /* ── Shimmer ─────────────────────────────────────────────────── */
+    @keyframes shimmer { 0%,100%{opacity:.2} 50%{opacity:.45} }
+    .shimmer { animation: shimmer 1.4s ease-in-out infinite; }
+
+    /* ── Fade in ─────────────────────────────────────────────────── */
+    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    .fade-in { animation: fadeIn 0.35s ease-out forwards; }
+
+    /* ── Pulse ───────────────────────────────────────────────────── */
+    @keyframes pulseDot { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .pulse { animation: pulseDot 2.2s ease-in-out infinite; }
+
+    /* ── Flash (duplicate ticker) ────────────────────────────────── */
+    @keyframes flashBorder { 0%,100%{border-color:#1c1c1c} 40%{border-color:#3b82f6} }
+    .flash { animation: flashBorder 0.55s ease; }
+
+    /* ── Quick-add button ────────────────────────────────────────── */
+    .qa-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      border: 1px solid #1c1c1c;
+      color: #686868;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      background: transparent;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .qa-btn:hover  { border-color: #2e2e2e; color: #e4e4e4; }
+    .qa-btn.active { border-color: #1e3a5f; color: #60a5fa; background: rgba(59,130,246,0.06); cursor: default; }
+
+    /* ── Scrollbar ───────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #1e1e1e; border-radius: 3px; }
+
+    nav a { text-decoration: none; transition: color 0.15s; }
+    nav a:hover { color: #e4e4e4 !important; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════════════════════════ -->
+<nav style="height:54px;border-bottom:1px solid #1c1c1c;background:#080808;">
+  <div style="max-width:680px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;justify-content:space-between;">
+
+    <a href="index.html" style="display:flex;align-items:center;gap:10px;">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <rect width="22" height="22" rx="5" fill="#1d4ed8"/>
+        <path d="M6 5h8M6 9.5h5.5" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M6 14l3 3 4-5 3 2.5" stroke="#93c5fd" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-weight:600;color:#fff;font-size:15px;letter-spacing:-0.02em;">Frontir</span>
+    </a>
+
+    <div style="display:flex;align-items:center;gap:6px;">
+      <span style="width:6px;height:6px;background:#10b981;border-radius:50%;" class="pulse"></span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#454545;">Live Sandbox</span>
+    </div>
+
+    <div style="display:flex;gap:20px;font-size:13px;color:#686868;">
+      <a href="/docs"       style="color:#686868;">Docs</a>
+      <a href="index.html"  style="color:#686868;">← Landing</a>
+    </div>
+
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE BODY
+════════════════════════════════════════════════════════════════ -->
+<main style="max-width:640px;margin:0 auto;padding:48px 24px 80px;">
+
+  <!-- Page header -->
+  <div style="margin-bottom:36px;">
+    <h1 style="font-family:'Zalando Sans Expanded',sans-serif;font-size:36px;font-weight:600;color:#fff;letter-spacing:-0.01em;margin-bottom:8px;">
+      Build your portfolio.
+    </h1>
+    <p style="font-size:14px;color:#707070;line-height:1.65;">
+      Pick from our ASX universe, set a risk tolerance, and see Efficient Frontier
+      optimisation + an AI-generated narrative in seconds.
+    </p>
+  </div>
+
+  <!-- ── INPUT CARD ─────────────────────────────────────────────── -->
+  <div class="card" style="padding:24px;margin-bottom:12px;">
+
+    <!-- Section: tickers -->
+    <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#404040;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:14px;">Portfolio</p>
+
+    <!-- Quick add -->
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;" id="quickRow">
+      <!-- injected by JS -->
+    </div>
+
+    <!-- Dropdown add row -->
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <div style="flex:1;">
+        <select id="tickerSelect" style="width:100%;">
+          <option value="">Add from full list…</option>
+        </select>
+      </div>
+      <div style="width:130px;">
+        <input type="number" id="addAmount" placeholder="Amount $" min="0" />
+      </div>
+      <button onclick="addFromSelect()"
+        style="flex-shrink:0;background:#111;border:1px solid #1c1c1c;color:#888;font-size:13px;
+               padding:0 14px;border-radius:5px;cursor:pointer;transition:border-color 0.15s,color 0.15s;white-space:nowrap;"
+        onmouseover="this.style.borderColor='#2e2e2e';this.style.color='#fff';"
+        onmouseout="this.style.borderColor='#1c1c1c';this.style.color='#888';">
+        + Add
+      </button>
+    </div>
+
+    <!-- Selected portfolio list -->
+    <div id="portfolioList"></div>
+
+    <!-- Empty state -->
+    <div id="portfolioEmpty" style="padding:16px 0;text-align:center;font-size:12px;color:#2e2e2e;font-family:'JetBrains Mono',monospace;">
+      No tickers added yet — use Quick Add or the dropdown above.
+    </div>
+
+    <div style="border-top:1px solid #111;margin:20px 0;"></div>
+
+    <!-- Risk tolerance -->
+    <div style="margin-bottom:18px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#404040;text-transform:uppercase;letter-spacing:0.12em;">Risk Tolerance</span>
+        <span id="riskVal" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#60a5fa;">0.7</span>
+      </div>
+      <input type="range" id="riskSlider" min="0" max="1" step="0.1" value="0.7"
+        oninput="document.getElementById('riskVal').textContent=parseFloat(this.value).toFixed(1)" />
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#2e2e2e;">
+        <span>min volatility</span><span>blended</span><span>max sharpe</span>
+      </div>
+    </div>
+
+    <!-- Jurisdiction + AI -->
+    <div style="display:flex;gap:16px;align-items:flex-end;">
+      <div style="flex:1;">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#404040;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;">Jurisdiction</p>
+        <select id="jurisdiction">
+          <option value="AU">AU — Australia</option>
+          <option value="DEFAULT">Global</option>
+        </select>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding-bottom:8px;">
+        <input type="checkbox" id="includeAI" checked />
+        <span style="font-size:13px;color:#686868;">AI Narrative</span>
+      </label>
+    </div>
+
+  </div><!-- /card -->
+
+  <!-- Error message -->
+  <p id="errMsg" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f87171;margin-bottom:10px;display:none;"></p>
+
+  <!-- Generate button -->
+  <button id="genBtn" onclick="runOptimize()"
+    style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;
+           background:#fff;color:#000;font-size:13px;font-weight:600;
+           padding:11px 0;border-radius:6px;border:none;cursor:pointer;
+           transition:background 0.15s;margin-bottom:32px;"
+    onmouseover="if(!this.disabled)this.style.background='#ebebeb';"
+    onmouseout="if(!this.disabled)this.style.background='#fff';">
+    <span id="btnText">Generate Narrative</span>
+    <svg id="btnArrow" width="13" height="13" viewBox="0 0 13 13" fill="none">
+      <path d="M1 6.5h11M7 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div id="btnSpinner" class="spinner" style="display:none;"></div>
+  </button>
+
+  <!-- ── RESULTS ─────────────────────────────────────────────────── -->
+  <div id="results" style="display:none;flex-direction:column;gap:12px;">
+
+    <!-- Weights -->
+    <div class="card" style="padding:20px;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#404040;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:16px;">Optimised Weights</p>
+      <div id="weightsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="card" style="padding:20px;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#404040;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:16px;">Performance</p>
+      <div id="metricsContainer" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
+    </div>
+
+    <!-- AI Narrative -->
+    <div id="narrativeCard" class="card" style="padding:20px;display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#404040;text-transform:uppercase;letter-spacing:0.12em;">AI Narrative</p>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#2a2a2a;border:1px solid #181818;padding:2px 8px;border-radius:4px;">gpt-4o-mini · temp 0.3</span>
+      </div>
+      <div id="narrativeContainer" style="display:flex;flex-direction:column;gap:12px;"></div>
+    </div>
+
+    <!-- Meta -->
+    <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:#252525;padding:0 2px;">
+      <span id="metaEngine"></span>
+      <span id="metaTime"></span>
+    </div>
+
+  </div><!-- /results -->
+
+</main>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+//  Config
+// ─────────────────────────────────────────────────────────────────
+const API_URL = 'https://api.frontir.app/api/v1/optimize';
+
+const TICKERS = [
+  'ALL.AX','ANZ.AX','BHP.AX','CBA.AX','COL.AX',
+  'CSL.AX','FMG.AX','GMG.AX','MQG.AX','NAB.AX',
+  'QAN.AX','REA.AX','RIO.AX','STO.AX','TCL.AX',
+  'TLS.AX','WBC.AX','WDS.AX','WES.AX','WOW.AX',
+];
+
+const QUICK_TICKERS = ['CBA.AX','BHP.AX','CSL.AX','TLS.AX','WES.AX','MQG.AX'];
+
+const BAR_COLORS = ['#3b82f6','#10b981','#f59e0b','#8b5cf6','#f43f5e','#06b6d4'];
+
+const NARRATIVE_STYLES = {
+  Risk:        { color: '#3b82f6' },
+  Opportunity: { color: '#10b981' },
+  Action:      { color: '#f59e0b' },
+};
+
+// portfolio: ordered array of { ticker, amount }
+let portfolio = [];
+
+// ─────────────────────────────────────────────────────────────────
+//  Init
+// ─────────────────────────────────────────────────────────────────
+(function init() {
+  renderQuickButtons();
+  updateDropdown();
+  // Pre-fill two tickers to reduce time-to-first-result
+  addTicker('CBA.AX', 20000);
+  addTicker('BHP.AX', 15000);
+})();
+
+// ─────────────────────────────────────────────────────────────────
+//  Quick-add buttons
+// ─────────────────────────────────────────────────────────────────
+function renderQuickButtons() {
+  document.getElementById('quickRow').innerHTML = QUICK_TICKERS.map(t => `
+    <button id="qa-${t.replace('.','_')}" class="qa-btn" onclick="addTicker('${t}')">${t}</button>
+  `).join('');
+}
+
+function syncQuickButtons() {
+  const added = new Set(portfolio.map(p => p.ticker));
+  QUICK_TICKERS.forEach(t => {
+    const btn = document.getElementById('qa-' + t.replace('.','_'));
+    if (!btn) return;
+    if (added.has(t)) {
+      btn.classList.add('active');
+      btn.onclick = null;
+    } else {
+      btn.classList.remove('active');
+      btn.onclick = () => addTicker(t);
+    }
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Dropdown
+// ─────────────────────────────────────────────────────────────────
+function updateDropdown() {
+  const added  = new Set(portfolio.map(p => p.ticker));
+  const select = document.getElementById('tickerSelect');
+  const prev   = select.value;
+
+  select.innerHTML = '<option value="">Add from full list…</option>' +
+    TICKERS
+      .filter(t => !added.has(t))
+      .map(t => `<option value="${t}"${t===prev?' selected':''}>${t}</option>`)
+      .join('');
+}
+
+function addFromSelect() {
+  const select = document.getElementById('tickerSelect');
+  const ticker = select.value;
+  if (!ticker) return;
+  const amount = parseFloat(document.getElementById('addAmount').value) || '';
+  addTicker(ticker, amount);
+  document.getElementById('addAmount').value = '';
+  select.value = '';
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Portfolio management
+// ─────────────────────────────────────────────────────────────────
+function addTicker(ticker, amount = '') {
+  // If already present, flash the row
+  if (portfolio.find(p => p.ticker === ticker)) {
+    const row = document.getElementById('prow-' + ticker.replace('.','_'));
+    if (row) { row.classList.add('flash'); setTimeout(() => row.classList.remove('flash'), 600); }
+    return;
+  }
+  portfolio.push({ ticker, amount });
+  renderPortfolio();
+  updateDropdown();
+  syncQuickButtons();
+}
+
+function removeTicker(ticker) {
+  portfolio = portfolio.filter(p => p.ticker !== ticker);
+  renderPortfolio();
+  updateDropdown();
+  syncQuickButtons();
+}
+
+function updateAmount(ticker, val) {
+  const item = portfolio.find(p => p.ticker === ticker);
+  if (item) item.amount = parseFloat(val) || '';
+}
+
+function renderPortfolio() {
+  const list  = document.getElementById('portfolioList');
+  const empty = document.getElementById('portfolioEmpty');
+
+  if (portfolio.length === 0) {
+    list.innerHTML  = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+
+  list.innerHTML = portfolio.map(({ ticker, amount }) => `
+    <div class="p-row card flash" id="prow-${ticker.replace('.','_')}" style="border:1px solid #111;padding:8px 12px;border-radius:5px;margin-bottom:6px;display:flex;align-items:center;gap:10px;background:#070707;">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#e4e4e4;flex-shrink:0;width:72px;">${ticker}</span>
+      <input type="number"
+        value="${amount}"
+        placeholder="Amount $"
+        min="0"
+        oninput="updateAmount('${ticker}', this.value)"
+        style="flex:1;" />
+      <button onclick="removeTicker('${ticker}')"
+        style="flex-shrink:0;background:none;border:none;cursor:pointer;color:#2a2a2a;padding:4px;display:flex;align-items:center;"
+        onmouseover="this.style.color='#f87171';" onmouseout="this.style.color='#2a2a2a';">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  `).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Build API payload
+// ─────────────────────────────────────────────────────────────────
+function buildPayload() {
+  const items = portfolio.map(({ ticker, amount }) => {
+    const item = { ticker };
+    if (amount > 0) item.amount = amount;
+    return item;
+  }).filter(i => i.ticker);
+
+  if (items.length < 2) throw new Error('Add at least 2 tickers to optimise.');
+
+  return {
+    portfolio:          items,
+    risk_tolerance:     parseFloat(document.getElementById('riskSlider').value),
+    include_ai_summary: document.getElementById('includeAI').checked,
+    jurisdiction:       document.getElementById('jurisdiction').value,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Run optimise
+// ─────────────────────────────────────────────────────────────────
+async function runOptimize() {
+  let payload;
+  try { payload = buildPayload(); }
+  catch (e) { showErr(e.message); return; }
+
+  clearErr();
+  setLoading(true);
+  showSkeleton(payload.portfolio.length);
+
+  try {
+    const res = await fetch(API_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.detail || `HTTP ${res.status}`);
+    }
+    renderResult(await res.json());
+  } catch (e) {
+    showErr(e.message);
+    document.getElementById('results').style.display = 'none';
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  UI state
+// ─────────────────────────────────────────────────────────────────
+function setLoading(on) {
+  const btn     = document.getElementById('genBtn');
+  const txt     = document.getElementById('btnText');
+  const arrow   = document.getElementById('btnArrow');
+  const spinner = document.getElementById('btnSpinner');
+
+  btn.disabled = on;
+  if (on) {
+    btn.style.background = '#111'; btn.style.color = '#333'; btn.style.cursor = 'not-allowed';
+    txt.textContent = 'Optimising…';
+    arrow.style.display   = 'none';
+    spinner.style.display = 'inline-block';
+  } else {
+    btn.style.background = '#fff'; btn.style.color = '#000'; btn.style.cursor = 'pointer';
+    txt.textContent = 'Generate Narrative';
+    arrow.style.display   = '';
+    spinner.style.display = 'none';
+  }
+}
+
+function showSkeleton(n) {
+  const results = document.getElementById('results');
+  results.style.display = 'flex';
+
+  document.getElementById('weightsContainer').innerHTML =
+    Array.from({ length: n }, () => `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="shimmer" style="width:64px;height:10px;background:#141414;border-radius:3px;flex-shrink:0;"></div>
+        <div style="flex:1;height:5px;background:#0c0c0c;border-radius:99px;overflow:hidden;">
+          <div class="shimmer" style="width:55%;height:100%;background:#181818;border-radius:99px;"></div>
+        </div>
+        <div class="shimmer" style="width:30px;height:10px;background:#141414;border-radius:3px;"></div>
+      </div>`).join('');
+
+  document.getElementById('metricsContainer').innerHTML =
+    ['','',''].map(() => `
+      <div style="text-align:center;">
+        <div class="shimmer" style="width:44px;height:24px;background:#141414;border-radius:4px;margin:0 auto 6px;"></div>
+        <div class="shimmer" style="width:52px;height:9px;background:#0f0f0f;border-radius:3px;margin:0 auto;"></div>
+      </div>`).join('');
+
+  document.getElementById('narrativeCard').style.display = 'none';
+}
+
+function showErr(msg) {
+  const el = document.getElementById('errMsg');
+  el.textContent = '⚠ ' + msg;
+  el.style.display = '';
+}
+function clearErr() {
+  document.getElementById('errMsg').style.display = 'none';
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Render results
+// ─────────────────────────────────────────────────────────────────
+function renderResult(data) {
+  document.getElementById('results').style.display = 'flex';
+  renderWeights(data.optimized_weights || {});
+  renderMetrics(data.metrics           || {});
+  if (data.ai_summary) renderNarrative(data.ai_summary);
+
+  const meta = data.metadata || {};
+  document.getElementById('metaEngine').textContent = meta.optimization_engine || '';
+  document.getElementById('metaTime').textContent   = meta.calculated_at
+    ? 'Calculated ' + new Date(meta.calculated_at).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'})
+    : '';
+}
+
+function renderWeights(weights) {
+  const sorted = Object.entries(weights).sort((a, b) => b[1] - a[1]);
+  const maxW   = sorted[0]?.[1] || 1;
+
+  document.getElementById('weightsContainer').innerHTML = sorted.map(([ticker, w], i) => {
+    const pct  = Math.round(w * 100);
+    const frac = Math.round((w / maxW) * 100);
+    return `
+      <div style="display:flex;align-items:center;gap:12px;" class="fade-in" style="animation-delay:${i*0.07}s;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#808080;width:64px;flex-shrink:0;">${ticker}</span>
+        <div style="flex:1;height:5px;background:#0c0c0c;border-radius:99px;overflow:hidden;">
+          <div class="bar-fill" data-w="${frac}"
+            style="width:0%;height:100%;background:${BAR_COLORS[i%BAR_COLORS.length]};border-radius:99px;"></div>
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#e4e4e4;width:30px;text-align:right;flex-shrink:0;">${pct}%</span>
+      </div>`;
+  }).join('');
+
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.bar-fill').forEach(el => { el.style.width = el.dataset.w + '%'; });
+  });
+}
+
+function renderMetrics(m) {
+  const fmt = (v, raw) => v != null ? (raw ? (v*100).toFixed(1)+'%' : parseFloat(v).toFixed(2)) : '—';
+
+  const items = [
+    { label:'Sharpe Ratio', value: fmt(m.sharpe_ratio),                                     color:'#10b981' },
+    { label:'Exp. Return',  value: m.expected_return_pct  || fmt(m.expected_return,  true),  color:'#3b82f6' },
+    { label:'Volatility',   value: m.volatility_pct       || fmt(m.volatility,       true),  color:'#f59e0b' },
+  ];
+
+  document.getElementById('metricsContainer').innerHTML = items.map((item, i) => `
+    <div style="text-align:center;" class="fade-in" style="animation-delay:${i*0.1}s;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:${item.color};letter-spacing:-0.02em;margin-bottom:5px;">${item.value}</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#3a3a3a;">${item.label}</div>
+    </div>`).join('');
+}
+
+function renderNarrative(raw) {
+  const card = document.getElementById('narrativeCard');
+  card.style.display = '';
+
+  const lines = raw.split('\n').filter(l => l.trim().startsWith('-'));
+  document.getElementById('narrativeContainer').innerHTML = lines.map((line, i) => {
+    const match = line.match(/\*\*(\w+):\*\*\s*(.*)/);
+    const label = match?.[1] || '';
+    const body  = match?.[2] || line.replace(/^[-\s*]+/,'');
+    const s     = NARRATIVE_STYLES[label] || { color:'#808080' };
+    return `
+      <div style="display:flex;gap:14px;" class="fade-in" style="animation-delay:${i*0.1}s;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:${s.color};text-transform:uppercase;
+                     letter-spacing:0.1em;flex-shrink:0;width:76px;padding-top:2px;">${label||'·'}</span>
+        <p style="font-size:13px;color:#686868;line-height:1.65;">${body}</p>
+      </div>`;
+  }).join('') || `<p style="font-size:13px;color:#555;">${raw}</p>`;
+}
+</script>
+
+</body>
+</html>

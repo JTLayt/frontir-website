@@ -19,7 +19,7 @@
     }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Zalando+Sans+Expanded:wght@600&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg:           #080808;
@@ -28,7 +28,7 @@
       --border:       #1c1c1c;
       --border-hi:    #2a2a2a;
       --text:         #e4e4e4;
-      --muted:        #505050;
+      --muted:        #808080;
       --subtle:       #2e2e2e;
       --blue:         #3b82f6;
       --blue-dim:     #1d4ed8;
@@ -190,6 +190,9 @@
       to { stroke-dashoffset: 0; }
     }
 
+    /* ── Zalando headings ────────────────────────────────────────── */
+    h2 { font-family: 'Zalando Sans Expanded', sans-serif; font-weight: 600; }
+
     /* ── Divider ─────────────────────────────────────────────────── */
     hr { border-color: var(--border); }
   </style>
@@ -215,16 +218,20 @@
     </a>
 
     <!-- Links -->
-    <div class="hidden md:flex items-center gap-7 text-[13px] text-[#505050]">
+    <div class="hidden md:flex items-center gap-7 text-[13px] text-[#808080]">
       <a href="#how-it-works">How it Works</a>
       <a href="#features">Features</a>
       <a href="#developer">API</a>
       <a href="/docs">Docs</a>
+      <a href="sandbox.html" class="flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full pulse"></span>
+        Try Demo
+      </a>
     </div>
 
     <!-- CTA -->
-    <a href="/docs" class="text-[13px] font-semibold bg-white text-black px-4 py-[7px] rounded-[6px] hover:bg-[#e8e8e8] transition-colors">
-      Get Started
+    <a href="sandbox.html" class="text-[13px] font-semibold bg-white text-black px-4 py-[7px] rounded-[6px] hover:bg-[#e8e8e8] transition-colors">
+      Try Demo
     </a>
   </div>
 </nav>
@@ -249,57 +256,53 @@
     </defs>
   </svg>
 
-  <div class="max-w-4xl mx-auto px-6 py-28 text-center relative z-10">
+  <div class="max-w-6xl mx-auto px-6 py-28 text-center relative z-10">
 
-    <!-- Status badge -->
-    <div class="fade-up d1 inline-flex items-center gap-2 border border-[#1c1c1c] rounded-full px-4 py-1.5 text-[11px] text-[#404040] mb-10 font-mono">
-      <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full pulse"></span>
-      ASX market data · refreshed 4:15 PM AEDT daily
-    </div>
-
-    <!-- Headline -->
-    <h1 class="fade-up d2 text-[48px] md:text-[72px] font-semibold text-white tracking-[-0.035em] leading-[1.02] mb-7">
-      The Intelligence Layer<br />
-      <span class="gradient-text">for Modern Portfolios.</span>
-    </h1>
-
-    <!-- Sub -->
-    <p class="fade-up d3 text-[16px] md:text-[17px] text-[#505050] max-w-[520px] mx-auto mb-12 leading-[1.7]">
-      One POST. Efficient Frontier optimisation across ASX200 equities,
-      Ledoit-Wolf covariance shrinkage, and an AI-generated investment
-      narrative — compliance metadata included.
-    </p>
-
-    <!-- CTAs -->
-    <div class="fade-up d4 flex flex-col sm:flex-row items-center justify-center gap-3 mb-24">
-      <a href="/docs" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-black text-[13px] font-semibold px-6 py-[10px] rounded-[6px] hover:bg-[#ebebeb] transition-colors">
-        Read the Docs
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 6.5h11M7 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-      <a href="https://github.com" class="w-full sm:w-auto flex items-center justify-center gap-2 border border-[#1c1c1c] text-[#666] text-[13px] font-medium px-6 py-[10px] rounded-[6px] hover:border-[#2a2a2a] hover:text-white transition-colors">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-        View Source
-      </a>
-    </div>
-
-    <!-- Live metrics strip -->
-    <div class="fade-up d5 grid grid-cols-3 gap-3 max-w-[420px] mx-auto">
-      <div class="metric">
-        <div class="text-emerald-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">1.92</div>
-        <div class="text-[#383838] text-[11px]">Sharpe Ratio</div>
-      </div>
-      <div class="metric">
-        <div class="text-blue-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">11.4%</div>
-        <div class="text-[#383838] text-[11px]">Exp. Return</div>
-      </div>
-      <div class="metric">
-        <div class="text-amber-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">14.2%</div>
-        <div class="text-[#383838] text-[11px]">Volatility</div>
-      </div>
-    </div>
-    <p class="font-mono text-[11px] text-[#222] mt-3">// sample · BHP.AX · CBA.AX · CSL.AX</p>
-
+  <div class="fade-up d1 inline-flex items-center gap-2 border border-[#1c1c1c] rounded-full px-4 py-1.5 text-[11px] text-[#666666] mb-10 font-mono">
+    <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full pulse"></span>
+    ASX market data · refreshed 4:15 PM AEDT daily
   </div>
+
+  <h1 class="fade-up d2 text-[48px] md:text-[74px] text-white leading-[1.0] mb-7 max-w-7xl mx-auto"
+      style="font-family:'Zalando Sans Expanded',sans-serif;font-weight:600;letter-spacing:-0.02em;">
+    The Intelligence Layer<br />
+    <span class="gradient-text">for Modern Portfolios.</span>
+  </h1>
+
+  <p class="fade-up d3 text-[16px] md:text-[17px] text-[#808080] max-w-[520px] mx-auto mb-12 leading-[1.7]">
+    One POST. Efficient Frontier optimisation across ASX200 equities,
+    Ledoit-Wolf covariance shrinkage, and an AI-generated investment
+    narrative — compliance metadata included.
+  </p>
+
+  <div class="fade-up d4 flex flex-col sm:flex-row items-center justify-center gap-3 mb-24">
+    <a href="/docs" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-black text-[13px] font-semibold px-6 py-[10px] rounded-[6px] hover:bg-[#ebebeb] transition-colors">
+      Read the Docs
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1 6.5h11M7 2.5l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="https://github.com" class="w-full sm:w-auto flex items-center justify-center gap-2 border border-[#1c1c1c] text-[#909090] text-[13px] font-medium px-6 py-[10px] rounded-[6px] hover:border-[#2a2a2a] hover:text-white transition-colors">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      View Source
+    </a>
+  </div>
+
+  <div class="fade-up d5 grid grid-cols-3 gap-3 max-w-[420px] mx-auto">
+    <div class="metric">
+      <div class="text-emerald-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">1.92</div>
+      <div class="text-[#616161] text-[11px]">Sharpe Ratio</div>
+    </div>
+    <div class="metric">
+      <div class="text-blue-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">11.4%</div>
+      <div class="text-[#616161] text-[11px]">Exp. Return</div>
+    </div>
+    <div class="metric">
+      <div class="text-amber-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">14.2%</div>
+      <div class="text-[#616161] text-[11px]">Volatility</div>
+    </div>
+  </div>
+  <p class="font-mono text-[11px] text-[#222] mt-3">// sample · BHP.AX · CBA.AX · CSL.AX</p>
+
+</div>
 
   <!-- Scroll cue -->
   <div class="absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-[#252525]">
@@ -314,7 +317,7 @@
 ════════════════════════════════════════════════════════════════ -->
 <div class="border-y border-[#1c1c1c] bg-[#0a0a0a] py-4">
   <div class="max-w-6xl mx-auto px-6">
-    <div class="flex flex-wrap items-center justify-center md:justify-between gap-6 text-[11px] font-mono text-[#303030]">
+    <div class="flex flex-wrap items-center justify-center md:justify-between gap-6 text-[11px] font-mono text-[#555555]">
       <span>20 ASX equities · top market cap</span>
       <span class="hidden md:block text-[#1c1c1c]">|</span>
       <span>504 trading days · 2-year horizon</span>
@@ -336,11 +339,11 @@
   <div class="max-w-6xl mx-auto px-6">
 
     <div class="mb-16">
-      <p class="text-[11px] font-mono text-[#2d2d2d] uppercase tracking-[0.14em] mb-3">01 — How it Works</p>
-      <h2 class="text-[32px] md:text-[42px] font-semibold text-white tracking-[-0.03em] mb-5 leading-tight">
+      <p class="text-[11px] font-mono text-[#565656] uppercase tracking-[0.14em] mb-3">01 — How it Works</p>
+      <h2 class="text-[32px] md:text-[42px] text-white mb-5 leading-tight">
         One endpoint.<br/>Complete intelligence.
       </h2>
-      <p class="text-[#505050] max-w-[500px] text-[15px] leading-relaxed">
+      <p class="text-[#808080] max-w-[500px] text-[15px] leading-relaxed">
         POST your portfolio. Frontir loads two years of adjusted daily close
         data, runs the Efficient Frontier solver, then passes the result to
         GPT-4o-mini for a structured narrative — all in a single response.
@@ -351,8 +354,8 @@
     <div class="flex flex-wrap gap-0 mb-14 items-start">
 
       <div class="flex flex-col items-center text-center w-[148px]">
-        <div class="w-8 h-8 rounded-full border border-[#1c1c1c] flex items-center justify-center font-mono text-[11px] text-[#3d3d3d] mb-3">01</div>
-        <p class="text-[12px] text-[#454545] leading-relaxed">POST tickers + risk&nbsp;tolerance</p>
+        <div class="w-8 h-8 rounded-full border border-[#1c1c1c] flex items-center justify-center font-mono text-[11px] text-[#606060] mb-3">01</div>
+        <p class="text-[12px] text-[#6e6e6e] leading-relaxed">POST tickers + risk&nbsp;tolerance</p>
       </div>
 
       <div class="flex items-start pt-4 mx-1">
@@ -361,8 +364,8 @@
       </div>
 
       <div class="flex flex-col items-center text-center w-[148px]">
-        <div class="w-8 h-8 rounded-full border border-[#1c1c1c] flex items-center justify-center font-mono text-[11px] text-[#3d3d3d] mb-3">02</div>
-        <p class="text-[12px] text-[#454545] leading-relaxed">Cache check · SHA-256 canonical key · 5 min TTL</p>
+        <div class="w-8 h-8 rounded-full border border-[#1c1c1c] flex items-center justify-center font-mono text-[11px] text-[#606060] mb-3">02</div>
+        <p class="text-[12px] text-[#6e6e6e] leading-relaxed">Cache check · SHA-256 canonical key · 5 min TTL</p>
       </div>
 
       <div class="flex items-start pt-4 mx-1">
@@ -371,8 +374,8 @@
       </div>
 
       <div class="flex flex-col items-center text-center w-[148px]">
-        <div class="w-8 h-8 rounded-full border border-[#1c1c1c] flex items-center justify-center font-mono text-[11px] text-[#3d3d3d] mb-3">03</div>
-        <p class="text-[12px] text-[#454545] leading-relaxed">Ledoit-Wolf cov. → Efficient Frontier → max Sharpe</p>
+        <div class="w-8 h-8 rounded-full border border-[#1c1c1c] flex items-center justify-center font-mono text-[11px] text-[#606060] mb-3">03</div>
+        <p class="text-[12px] text-[#6e6e6e] leading-relaxed">Ledoit-Wolf cov. → Efficient Frontier → max Sharpe</p>
       </div>
 
       <div class="flex items-start pt-4 mx-1">
@@ -382,7 +385,7 @@
 
       <div class="flex flex-col items-center text-center w-[148px]">
         <div class="w-8 h-8 rounded-full border border-blue-900 flex items-center justify-center font-mono text-[11px] text-blue-500 mb-3">04</div>
-        <p class="text-[12px] text-[#454545] leading-relaxed">GPT-4o-mini generates Risk · Opportunity · Action</p>
+        <p class="text-[12px] text-[#6e6e6e] leading-relaxed">GPT-4o-mini generates Risk · Opportunity · Action</p>
       </div>
 
     </div>
@@ -468,8 +471,8 @@
   <div class="max-w-6xl mx-auto px-6">
 
     <div class="mb-16">
-      <p class="text-[11px] font-mono text-[#2d2d2d] uppercase tracking-[0.14em] mb-3">02 — Capabilities</p>
-      <h2 class="text-[32px] md:text-[42px] font-semibold text-white tracking-[-0.03em] leading-tight">
+      <p class="text-[11px] font-mono text-[#565656] uppercase tracking-[0.14em] mb-3">02 — Capabilities</p>
+      <h2 class="text-[32px] md:text-[42px] text-white leading-tight">
         Not just optimisation.<br/>Portfolio intelligence.
       </h2>
     </div>
@@ -479,37 +482,37 @@
 
       <!-- ── AI Narratives ────────────────────────────────────────── -->
       <div class="card p-7">
-        <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#404040]">
+        <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#666666]">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M2 4h12M2 7.5h9M2 11h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
             <circle cx="13.5" cy="11.5" r="2" stroke="#3b82f6" stroke-width="1.2"/>
           </svg>
         </div>
         <h3 class="font-semibold text-white mb-2 text-[15px] tracking-[-0.01em]">AI-Driven Narratives</h3>
-        <p class="text-[13px] text-[#4a4a4a] leading-relaxed mb-6">
+        <p class="text-[13px] text-[#717171] leading-relaxed mb-6">
           Every optimisation ships with a structured GPT-4o-mini narrative.
           The model receives only the math output — never raw news — and
-          must produce exactly three bullets at <code class="font-mono text-[11px] text-[#555]">temperature=0.3</code>.
-          No fabricated numbers. Returns <code class="font-mono text-[11px] text-[#555]">null</code> gracefully
+          must produce exactly three bullets at <code class="font-mono text-[11px] text-[#808080]">temperature=0.3</code>.
+          No fabricated numbers. Returns <code class="font-mono text-[11px] text-[#808080]">null</code> gracefully
           if the key is missing.
         </p>
         <div class="border border-[#161616] rounded-[6px] p-4 font-mono text-[11.5px] leading-[1.9] bg-[#070707]">
           <div class="text-[#222] mb-1">// ai_summary output</div>
-          <div><span class="text-blue-500">Risk:</span> <span class="text-[#404040]">Commodities at cycle peak...</span></div>
-          <div><span class="text-emerald-500">Opportunity:</span> <span class="text-[#404040]">Domestic rate tailwind...</span></div>
-          <div><span class="text-amber-500">Action:</span> <span class="text-[#404040]">Trim BHP 5% on strength...</span></div>
+          <div><span class="text-blue-500">Risk:</span> <span class="text-[#666666]">Commodities at cycle peak...</span></div>
+          <div><span class="text-emerald-500">Opportunity:</span> <span class="text-[#666666]">Domestic rate tailwind...</span></div>
+          <div><span class="text-amber-500">Action:</span> <span class="text-[#666666]">Trim BHP 5% on strength...</span></div>
         </div>
       </div>
 
       <!-- ── ASX Integration ─────────────────────────────────────── -->
       <div class="card p-7">
-        <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#404040]">
+        <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#666666]">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M1 13.5L5 8l3 3 4-5.5 3 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
         <h3 class="font-semibold text-white mb-2 text-[15px] tracking-[-0.01em]">ASX-Native Data Layer</h3>
-        <p class="text-[13px] text-[#4a4a4a] leading-relaxed mb-6">
+        <p class="text-[13px] text-[#717171] leading-relaxed mb-6">
           Two years of adjusted daily close data for ASX200's top 20 equities
           by market capitalisation. Scraped via YahooQuery, stored in SQLite,
           and refreshed at 4:15&nbsp;PM AEDT every weekday after market close.
@@ -534,23 +537,23 @@
 
       <!-- ── MPT Math ────────────────────────────────────────────── -->
       <div class="card p-7">
-        <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#404040]">
+        <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#666666]">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M2 14.5L5 9l3.5 3.5L12 5l3 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
             <circle cx="14.5" cy="3.5" r="1.5" fill="#3b82f6"/>
           </svg>
         </div>
         <h3 class="font-semibold text-white mb-2 text-[15px] tracking-[-0.01em]">Modern Portfolio Theory</h3>
-        <p class="text-[13px] text-[#4a4a4a] leading-relaxed mb-6">
+        <p class="text-[13px] text-[#717171] leading-relaxed mb-6">
           Powered by PyPortfolioOpt 1.5.5 — Ledoit-Wolf covariance shrinkage
           improves stability with short histories. Objective is configurable
-          via <code class="font-mono text-[11px] text-[#555]">risk_tolerance</code>. Per-ticker weight
+          via <code class="font-mono text-[11px] text-[#808080]">risk_tolerance</code>. Per-ticker weight
           bounds passed directly to the convex solver.
         </p>
         <div class="space-y-2.5 font-mono text-[11.5px]">
           <div class="flex items-center justify-between">
             <span class="text-[#333]">risk_tolerance: 0.0</span>
-            <span class="text-[#404040]">→ min volatility</span>
+            <span class="text-[#666666]">→ min volatility</span>
           </div>
           <div class="flex items-center justify-between">
             <span class="text-blue-500">risk_tolerance: 0.7</span>
@@ -558,7 +561,7 @@
           </div>
           <div class="flex items-center justify-between">
             <span class="text-[#333]">risk_tolerance: 1.0</span>
-            <span class="text-[#404040]">→ max Sharpe</span>
+            <span class="text-[#666666]">→ max Sharpe</span>
           </div>
         </div>
       </div>
@@ -570,7 +573,7 @@
 
       <!-- ── Compliance ──────────────────────────────────────────── -->
       <div class="card p-7 flex gap-6">
-        <div class="flex-none w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center text-[#404040]">
+        <div class="flex-none w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center text-[#666666]">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <rect x="2.5" y="1" width="11" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
             <path d="M5 5.5h6M5 8.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
@@ -579,10 +582,10 @@
         </div>
         <div>
           <h3 class="font-semibold text-white mb-2 text-[15px] tracking-[-0.01em]">Compliance-Ready Responses</h3>
-          <p class="text-[13px] text-[#4a4a4a] leading-relaxed">
+          <p class="text-[13px] text-[#717171] leading-relaxed">
             Every response carries jurisdiction-aware disclaimers (AU&nbsp;2026), structured
-            <code class="font-mono text-[11px] text-[#555]">metadata</code> with engine version and data provenance,
-            and a <code class="font-mono text-[11px] text-[#555]">calculated_at</code> ISO timestamp.
+            <code class="font-mono text-[11px] text-[#808080]">metadata</code> with engine version and data provenance,
+            and a <code class="font-mono text-[11px] text-[#808080]">calculated_at</code> ISO timestamp.
             Designed to drop straight into adviser workflow tools without
             additional wrapping.
           </p>
@@ -591,7 +594,7 @@
 
       <!-- ── Caching ─────────────────────────────────────────────── -->
       <div class="card p-7 flex gap-6">
-        <div class="flex-none w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center text-[#404040]">
+        <div class="flex-none w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center text-[#666666]">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/>
             <path d="M8 5v3l2.5 2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -599,7 +602,7 @@
         </div>
         <div>
           <h3 class="font-semibold text-white mb-2 text-[15px] tracking-[-0.01em]">SHA-256 Request Caching</h3>
-          <p class="text-[13px] text-[#4a4a4a] leading-relaxed">
+          <p class="text-[13px] text-[#717171] leading-relaxed">
             Identical requests are served from a 5-minute in-memory TTL cache.
             The cache key is a canonical SHA-256 hash of the request — parameter
             order differences don't break hits. P95 latency under 200ms.
@@ -624,13 +627,13 @@
 
       <!-- Left: copy -->
       <div>
-        <p class="text-[11px] font-mono text-[#2d2d2d] uppercase tracking-[0.14em] mb-3">03 — Developer First</p>
-        <h2 class="text-[32px] md:text-[42px] font-semibold text-white tracking-[-0.03em] leading-tight mb-6">
+        <p class="text-[11px] font-mono text-[#565656] uppercase tracking-[0.14em] mb-3">03 — Developer First</p>
+        <h2 class="text-[32px] md:text-[42px] text-white leading-tight mb-6">
           Built for engineers.<br/>Trusted by advisers.
         </h2>
-        <p class="text-[15px] text-[#505050] leading-relaxed mb-10">
+        <p class="text-[15px] text-[#808080] leading-relaxed mb-10">
           Frontir is API-first by design. Swagger docs live at
-          <code class="font-mono text-[12px] bg-[#0e0e0e] border border-[#1c1c1c] text-[#666] px-1.5 py-0.5 rounded">/docs</code>
+          <code class="font-mono text-[12px] bg-[#0e0e0e] border border-[#1c1c1c] text-[#909090] px-1.5 py-0.5 rounded">/docs</code>
           — interactive, type-safe, and runnable from the browser.
           Pydantic&nbsp;v2 validates every request so integrations fail
           fast, not silently.
@@ -644,7 +647,7 @@
             </div>
             <div>
               <p class="text-[14px] text-white font-medium mb-0.5">OpenAPI 3.1 schema</p>
-              <p class="text-[12px] text-[#454545]">Machine-readable spec for client codegen in any language — Python, TypeScript, Swift.</p>
+              <p class="text-[12px] text-[#6e6e6e]">Machine-readable spec for client codegen in any language — Python, TypeScript, Swift.</p>
             </div>
           </div>
 
@@ -654,7 +657,7 @@
             </div>
             <div>
               <p class="text-[14px] text-white font-medium mb-0.5">Structured JSON logging</p>
-              <p class="text-[12px] text-[#454545]">structlog in production. Ship directly to Datadog, CloudWatch, or Loki without transformation.</p>
+              <p class="text-[12px] text-[#6e6e6e]">structlog in production. Ship directly to Datadog, CloudWatch, or Loki without transformation.</p>
             </div>
           </div>
 
@@ -664,7 +667,7 @@
             </div>
             <div>
               <p class="text-[14px] text-white font-medium mb-0.5">Graceful partial failures</p>
-              <p class="text-[12px] text-[#454545]">Tickers with insufficient history return actionable warnings, not HTTP 500. The optimisation continues with the remaining assets.</p>
+              <p class="text-[12px] text-[#6e6e6e]">Tickers with insufficient history return actionable warnings, not HTTP 500. The optimisation continues with the remaining assets.</p>
             </div>
           </div>
 
@@ -674,13 +677,13 @@
             </div>
             <div>
               <p class="text-[14px] text-white font-medium mb-0.5">Self-hostable · MIT licensed</p>
-              <p class="text-[12px] text-[#454545]">Deploy alongside your existing stack. No external dependency for the core engine — AI summaries are opt-in via <code class="font-mono text-[11px]">OPENAI_API_KEY</code>.</p>
+              <p class="text-[12px] text-[#6e6e6e]">Deploy alongside your existing stack. No external dependency for the core engine — AI summaries are opt-in via <code class="font-mono text-[11px]">OPENAI_API_KEY</code>.</p>
             </div>
           </div>
 
         </div>
 
-        <a href="/docs" class="inline-flex items-center gap-2 border border-[#1c1c1c] text-[#555] text-[13px] font-medium px-5 py-[9px] rounded-[6px] hover:border-blue-900 hover:text-blue-400 transition-colors">
+        <a href="/docs" class="inline-flex items-center gap-2 border border-[#1c1c1c] text-[#808080] text-[13px] font-medium px-5 py-[9px] rounded-[6px] hover:border-blue-900 hover:text-blue-400 transition-colors">
           Open API Reference
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M1.5 10.5l9-9M10.5 10.5V1.5H1.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
@@ -694,7 +697,7 @@
           <div class="dot" style="background:#28c840"></div>
           <span class="ml-3 text-[11px] text-[#2e2e2e] font-mono">shell</span>
         </div>
-        <div class="terminal-body text-[12px]"><span class="text-[#2a2a2a]">$</span> <span class="text-[#505050]">curl</span> <span class="s">-X POST</span> https://api.frontir.io/api/v1/optimize \
+        <div class="terminal-body text-[12px]"><span class="text-[#2a2a2a]">$</span> <span class="text-[#808080]">curl</span> <span class="s">-X POST</span> https://api.frontir.io/api/v1/optimize \
   -H <span class="s">"Content-Type: application/json"</span> \
   -d <span class="s">'{</span>
     <span class="k">"portfolio"</span>: [
@@ -734,7 +737,7 @@
 
       <div class="border border-[#141414] rounded-[6px] p-5">
         <p class="text-[11px] font-mono text-[#252525] mb-2">Current</p>
-        <p class="text-[13px] font-medium text-[#383838] mb-1">SQLite + in-process</p>
+        <p class="text-[13px] font-medium text-[#616161] mb-1">SQLite + in-process</p>
         <p class="text-[12px] text-[#2a2a2a]">YahooQuery · 20 ASX tickers · single worker</p>
       </div>
 
@@ -746,13 +749,13 @@
 
       <div class="border border-[#141414] rounded-[6px] p-5">
         <p class="text-[11px] font-mono text-[#252525] mb-2">Data</p>
-        <p class="text-[13px] font-medium text-[#383838] mb-1">Incremental append</p>
+        <p class="text-[13px] font-medium text-[#616161] mb-1">Incremental append</p>
         <p class="text-[12px] text-[#2a2a2a]">Daily delta only · corporate actions table</p>
       </div>
 
       <div class="border border-[#141414] rounded-[6px] p-5">
         <p class="text-[11px] font-mono text-[#252525] mb-2">Scale</p>
-        <p class="text-[13px] font-medium text-[#383838] mb-1">Global equities</p>
+        <p class="text-[13px] font-medium text-[#616161] mb-1">Global equities</p>
         <p class="text-[12px] text-[#2a2a2a]">Polygon.io · Celery/Redis · 1000+ tickers</p>
       </div>
 
@@ -771,10 +774,10 @@
     </svg>
   </div>
   <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
-    <h2 class="text-[32px] md:text-[48px] font-semibold text-white tracking-[-0.03em] mb-5 leading-tight">
+    <h2 class="text-[32px] md:text-[48px] text-white mb-5 leading-tight">
       Start optimising<br/>in minutes.
     </h2>
-    <p class="text-[#505050] text-[16px] mb-10 max-w-md mx-auto">
+    <p class="text-[#808080] text-[16px] mb-10 max-w-md mx-auto">
       Self-hostable. MIT-licensed. No API key required
       for the core Efficient Frontier engine.
     </p>
@@ -782,7 +785,7 @@
       <a href="/docs" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-black text-[13px] font-semibold px-7 py-[11px] rounded-[6px] hover:bg-[#ebebeb] transition-colors">
         Read the Docs →
       </a>
-      <a href="https://github.com" class="w-full sm:w-auto text-[13px] text-[#505050] font-medium px-7 py-[11px] rounded-[6px] border border-[#1c1c1c] hover:border-[#2a2a2a] hover:text-white transition-colors">
+      <a href="https://github.com" class="w-full sm:w-auto text-[13px] text-[#808080] font-medium px-7 py-[11px] rounded-[6px] border border-[#1c1c1c] hover:border-[#2a2a2a] hover:text-white transition-colors">
         View on GitHub
       </a>
     </div>
@@ -806,9 +809,9 @@
     </div>
 
     <div class="flex flex-wrap items-center justify-center gap-5 text-[11px] text-[#2a2a2a] font-mono">
-      <a href="/docs"         class="hover:text-[#555] transition-colors">Docs</a>
-      <a href="/api/v1/health" class="hover:text-[#555] transition-colors">Health</a>
-      <a href="https://github.com" class="hover:text-[#555] transition-colors">GitHub</a>
+      <a href="/docs"         class="hover:text-[#808080] transition-colors">Docs</a>
+      <a href="/api/v1/health" class="hover:text-[#808080] transition-colors">Health</a>
+      <a href="https://github.com" class="hover:text-[#808080] transition-colors">GitHub</a>
       <span class="text-[#181818]">·</span>
       <span>PyPortfolioOpt · FastAPI · GPT-4o-mini</span>
     </div>
