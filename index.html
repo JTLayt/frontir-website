@@ -195,6 +195,14 @@
 
     /* ── Divider ─────────────────────────────────────────────────── */
     hr { border-color: var(--border); }
+
+    /* ── Mobile ──────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .hero-glow { width: 400px; height: 280px; }
+      .terminal-body { font-size: 10px; }
+      .metric { padding: 10px 12px; }
+      .metric > div:first-child { font-size: 18px !important; }
+    }
   </style>
 </head>
 
@@ -256,20 +264,20 @@
     </defs>
   </svg>
 
-  <div class="max-w-6xl mx-auto px-6 py-28 text-center relative z-10">
+  <div class="max-w-6xl mx-auto px-6 py-16 sm:py-20 md:py-28 text-center relative z-10">
 
   <div class="fade-up d1 inline-flex items-center gap-2 border border-[#1c1c1c] rounded-full px-4 py-1.5 text-[11px] text-[#909090] mb-10 font-mono">
     <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full pulse"></span>
     ASX market data · refreshed 4:15 PM AEDT daily
   </div>
 
-  <h1 class="fade-up d2 text-[48px] md:text-[74px] text-white leading-[1.0] mb-7 max-w-7xl mx-auto"
+  <h1 class="fade-up d2 text-[28px] sm:text-[40px] md:text-[74px] text-white leading-[1.0] mb-7 max-w-7xl mx-auto"
       style="font-family:'Zalando Sans Expanded',sans-serif;font-weight:600;letter-spacing:-0.02em;">
     The Intelligence Layer<br />
     <span class="gradient-text">for Modern Portfolios.</span>
   </h1>
 
-  <p class="fade-up d3 text-[16px] md:text-[17px] text-[#808080] max-w-[520px] mx-auto mb-12 leading-[1.7]">
+  <p class="fade-up d3 text-[14px] sm:text-[16px] md:text-[17px] text-[#808080] max-w-[520px] mx-auto mb-12 leading-[1.7]">
     One POST. Efficient Frontier optimisation across ASX200 equities,
     Ledoit-Wolf covariance shrinkage, and an AI-generated investment
     narrative — compliance metadata included.
@@ -317,7 +325,7 @@
 ════════════════════════════════════════════════════════════════ -->
 <div class="border-y border-[#1c1c1c] bg-[#0a0a0a] py-4">
   <div class="max-w-6xl mx-auto px-6">
-    <div class="flex flex-wrap items-center justify-center md:justify-between gap-6 text-[11px] font-mono text-[#737373]">
+    <div class="flex flex-wrap items-center justify-center md:justify-between gap-4 sm:gap-6 text-[11px] font-mono text-[#737373]">
       <span>20 ASX equities · top market cap</span>
       <span class="hidden md:block text-[#1c1c1c]">|</span>
       <span>504 trading days · 2-year horizon</span>
@@ -335,7 +343,7 @@
 <!-- ══════════════════════════════════════════════════════════════
      HOW IT WORKS
 ════════════════════════════════════════════════════════════════ -->
-<section id="how-it-works" class="py-28 border-b border-[#1c1c1c]">
+<section id="how-it-works" class="py-16 md:py-28 border-b border-[#1c1c1c]">
   <div class="max-w-6xl mx-auto px-6">
 
     <div class="mb-16">
@@ -467,7 +475,7 @@
 <!-- ══════════════════════════════════════════════════════════════
      FEATURES
 ════════════════════════════════════════════════════════════════ -->
-<section id="features" class="py-28 border-b border-[#1c1c1c]">
+<section id="features" class="py-16 md:py-28 border-b border-[#1c1c1c]">
   <div class="max-w-6xl mx-auto px-6">
 
     <div class="mb-16">
@@ -481,7 +489,7 @@
     <div class="grid md:grid-cols-3 gap-4 mb-4">
 
       <!-- ── AI Narratives ────────────────────────────────────────── -->
-      <div class="card p-7">
+      <div class="card p-4 sm:p-7">
         <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#909090]">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M2 4h12M2 7.5h9M2 11h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
@@ -505,7 +513,7 @@
       </div>
 
       <!-- ── ASX Integration ─────────────────────────────────────── -->
-      <div class="card p-7">
+      <div class="card p-4 sm:p-7">
         <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#909090]">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M1 13.5L5 8l3 3 4-5.5 3 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -536,7 +544,7 @@
       </div>
 
       <!-- ── MPT Math ────────────────────────────────────────────── -->
-      <div class="card p-7">
+      <div class="card p-4 sm:p-7">
         <div class="w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center mb-6 text-[#909090]">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M2 14.5L5 9l3.5 3.5L12 5l3 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -572,7 +580,7 @@
     <div class="grid md:grid-cols-2 gap-4">
 
       <!-- ── Compliance ──────────────────────────────────────────── -->
-      <div class="card p-7 flex gap-6">
+      <div class="card p-4 sm:p-7 flex gap-6">
         <div class="flex-none w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center text-[#909090]">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <rect x="2.5" y="1" width="11" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
@@ -593,7 +601,7 @@
       </div>
 
       <!-- ── Caching ─────────────────────────────────────────────── -->
-      <div class="card p-7 flex gap-6">
+      <div class="card p-4 sm:p-7 flex gap-6">
         <div class="flex-none w-9 h-9 rounded-[6px] border border-[#1c1c1c] flex items-center justify-center text-[#909090]">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/>
@@ -620,10 +628,10 @@
 <!-- ══════════════════════════════════════════════════════════════
      DEVELOPER FIRST
 ════════════════════════════════════════════════════════════════ -->
-<section id="developer" class="py-28 border-b border-[#1c1c1c]">
+<section id="developer" class="py-16 md:py-28 border-b border-[#1c1c1c]">
   <div class="max-w-6xl mx-auto px-6">
 
-    <div class="grid md:grid-cols-2 gap-16 items-start">
+    <div class="grid md:grid-cols-2 gap-6 md:gap-16 items-start">
 
       <!-- Left: copy -->
       <div>
@@ -730,7 +738,7 @@
 <!-- ══════════════════════════════════════════════════════════════
      ROADMAP STRIP  (subtle, enterprise credibility)
 ════════════════════════════════════════════════════════════════ -->
-<section class="py-20 border-b border-[#1c1c1c] bg-[#0a0a0a]">
+<section class="py-14 md:py-20 border-b border-[#1c1c1c] bg-[#0a0a0a]">
   <div class="max-w-6xl mx-auto px-6">
     <p class="text-[11px] font-mono text-[#505050] uppercase tracking-[0.14em] mb-10">Architecture · Enterprise Path</p>
     <div class="grid md:grid-cols-4 gap-4">

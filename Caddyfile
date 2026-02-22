@@ -1,5 +1,6 @@
 :80 {
     root * /usr/share/caddy
+    redir /home /
     try_files {path} {path}.html
     file_server
     encode gzip
