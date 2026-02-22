@@ -619,7 +619,7 @@ function renderMetrics(m) {
 
   const items = [
     { label:'Sharpe Ratio', value: fmt(m.sharpe_ratio),                                     color:'#10b981' },
-    { label:'Exp. Return',  value: m.expected_return_pct  || fmt(m.expected_return,  true),  color:'#3b82f6' },
+    { label:'2yr Hist. Return',  value: m.expected_return_pct  || fmt(m.expected_return,  true),  color:'#3b82f6' },
     { label:'Volatility',   value: m.volatility_pct       || fmt(m.volatility,       true),  color:'#f59e0b' },
   ];
 
