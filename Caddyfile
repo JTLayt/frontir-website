@@ -2,7 +2,7 @@
     encode gzip
 
     handle /api/* {
-        reverse_proxy https://api.frontir.app {
+        reverse_proxy http://frontir-backend.railway.internal:8080 {
             header_up X-API-Key {$API_KEY}
         }
     }
