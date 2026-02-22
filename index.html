@@ -19,7 +19,7 @@
     }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Zalando+Sans+Expanded:wght@600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg:           #080808;
@@ -190,8 +190,8 @@
       to { stroke-dashoffset: 0; }
     }
 
-    /* ── Zalando headings ────────────────────────────────────────── */
-    h2 { font-family: 'Zalando Sans Expanded', sans-serif; font-weight: 600; }
+    /* ── Serif headings ──────────────────────────────────────────── */
+    h1, h2 { font-family: 'Instrument Serif', serif; font-weight: 400; }
 
     /* ── Divider ─────────────────────────────────────────────────── */
     hr { border-color: var(--border); }
@@ -272,7 +272,7 @@
   </div>
 
   <h1 class="fade-up d2 text-[28px] sm:text-[40px] md:text-[74px] text-white leading-[1.0] mb-7 max-w-7xl mx-auto"
-      style="font-family:'Zalando Sans Expanded',sans-serif;font-weight:600;letter-spacing:-0.02em;">
+      style="font-family:'Instrument Serif',serif;font-weight:400;letter-spacing:-0.01em;">
     The Intelligence Layer<br />
     <span class="gradient-text">for Modern Portfolios.</span>
   </h1>
@@ -359,14 +359,14 @@
     </div>
 
     <!-- Pipeline steps -->
-    <div class="flex flex-wrap gap-0 mb-14 items-start">
+    <div class="flex flex-col items-center gap-6 mb-14 sm:flex-row sm:flex-wrap sm:gap-0 sm:items-start sm:justify-start">
 
       <div class="flex flex-col items-center text-center w-[148px]">
         <div class="w-8 h-8 rounded-full border border-[#1c1c1c] flex items-center justify-center font-mono text-[11px] text-[#606060] mb-3">01</div>
         <p class="text-[12px] text-[#929292] leading-relaxed">POST tickers + risk&nbsp;tolerance</p>
       </div>
 
-      <div class="flex items-start pt-4 mx-1">
+      <div class="hidden sm:flex items-start pt-4 mx-1">
         <div class="w-10 h-px bg-[#1c1c1c] mt-0"></div>
         <svg width="7" height="7" viewBox="0 0 7 7" fill="none" class="-ml-0.5"><path d="M0 3.5h6M3 1l3 2.5L3 6" stroke="#2a2a2a" stroke-width="1" stroke-linecap="round"/></svg>
       </div>
@@ -376,7 +376,7 @@
         <p class="text-[12px] text-[#929292] leading-relaxed">Cache check · SHA-256 canonical key · 5 min TTL</p>
       </div>
 
-      <div class="flex items-start pt-4 mx-1">
+      <div class="hidden sm:flex items-start pt-4 mx-1">
         <div class="w-10 h-px bg-[#1c1c1c]"></div>
         <svg width="7" height="7" viewBox="0 0 7 7" fill="none" class="-ml-0.5"><path d="M0 3.5h6M3 1l3 2.5L3 6" stroke="#2a2a2a" stroke-width="1" stroke-linecap="round"/></svg>
       </div>
@@ -386,7 +386,7 @@
         <p class="text-[12px] text-[#929292] leading-relaxed">Ledoit-Wolf cov. → Efficient Frontier → max Sharpe</p>
       </div>
 
-      <div class="flex items-start pt-4 mx-1">
+      <div class="hidden sm:flex items-start pt-4 mx-1">
         <div class="w-10 h-px bg-[#1c1c1c]"></div>
         <svg width="7" height="7" viewBox="0 0 7 7" fill="none" class="-ml-0.5"><path d="M0 3.5h6M3 1l3 2.5L3 6" stroke="#2a2a2a" stroke-width="1" stroke-linecap="round"/></svg>
       </div>
