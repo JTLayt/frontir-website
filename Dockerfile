@@ -4,3 +4,4 @@ COPY index.html /usr/share/caddy/index.html
 COPY sandbox.html /usr/share/caddy/sandbox.html
 COPY frontir-logo-v1.png /usr/share/caddy/frontir-logo-v1.png
 COPY frontirfavicon.png /usr/share/caddy/frontirfavicon.png
+COPY frontir-social-share-v1.jpg /usr/share/caddy/frontir-social-share-v1.jpg
