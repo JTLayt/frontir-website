@@ -294,7 +294,7 @@
       <input type="range" id="riskSlider" min="0" max="1" step="0.1" value="0.7"
         oninput="document.getElementById('riskVal').textContent=parseFloat(this.value).toFixed(1)" />
       <div style="display:flex;justify-content:space-between;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#2e2e2e;">
-        <span>min volatility</span><span>blended</span><span>max sharpe</span>
+        <span>min volatility</span><span>efficient frontier</span><span>growth</span>
       </div>
     </div>
 
@@ -348,6 +348,12 @@
       <div id="metricsContainer" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;"></div>
     </div>
 
+    <!-- Sector Exposure -->
+    <div id="sectorCard" class="card" style="padding:20px;display:none;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#404040;text-transform:uppercase;letter-spacing:0.12em;margin-bottom:16px;">Sector Exposure</p>
+      <div id="sectorContainer" style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;"></div>
+    </div>
+
     <!-- AI Narrative -->
     <div id="narrativeCard" class="card" style="padding:20px;display:none;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
@@ -357,8 +363,14 @@
       <div id="narrativeContainer" style="display:flex;flex-direction:column;gap:12px;"></div>
     </div>
 
+    <!-- Warnings -->
+    <div id="warningsContainer" style="display:none;padding:12px 16px;border:1px solid #2a1f0a;background:#0f0900;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#d97706;">
+      <div style="margin-bottom:6px;font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#92400e;">Warnings</div>
+      <div id="warningsList"></div>
+    </div>
+
     <!-- Meta -->
-    <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:#252525;padding:0 2px;">
+    <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:#606060;padding:0 2px;">
       <span id="metaEngine"></span>
       <span id="metaTime"></span>
     </div>
@@ -607,7 +619,9 @@ function showSkeleton(n) {
         <div class="shimmer" style="width:52px;height:9px;background:#0f0f0f;border-radius:3px;margin:0 auto;"></div>
       </div>`).join('');
 
-  document.getElementById('narrativeCard').style.display = 'none';
+  document.getElementById('narrativeCard').style.display     = 'none';
+  document.getElementById('warningsContainer').style.display = 'none';
+  document.getElementById('sectorCard').style.display        = 'none';
 }
 
 function showErr(msg) {
@@ -626,6 +640,8 @@ function renderResult(data) {
   document.getElementById('results').style.display = 'flex';
   renderWeights(data.optimized_weights || {});
   renderMetrics(data.metrics           || {});
+  renderSector(data.optimized_weights  || {}, data.ticker_metadata || {});
+  renderWarnings(data.warnings         || []);
   if (data.ai_summary) renderNarrative(data.ai_summary);
 
   const meta = data.metadata || {};
@@ -633,6 +649,17 @@ function renderResult(data) {
   document.getElementById('metaTime').textContent   = meta.calculated_at
     ? 'Calculated ' + new Date(meta.calculated_at).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'})
     : '';
+}
+
+function renderWarnings(warnings) {
+  const container = document.getElementById('warningsContainer');
+  const list      = document.getElementById('warningsList');
+  if (!warnings || warnings.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  list.innerHTML = warnings.map(w => `<div style="margin-bottom:3px;">· ${w}</div>`).join('');
+  container.style.display = '';
 }
 
 function renderWeights(weights) {
@@ -661,17 +688,61 @@ function renderWeights(weights) {
 function renderMetrics(m) {
   const fmt = (v, raw) => v != null ? (raw ? (v*100).toFixed(1)+'%' : parseFloat(v).toFixed(2)) : '—';
 
+  const btr   = m.backtested_return_range || {};
+  const p50   = btr.p50 != null ? (btr.p50 * 100).toFixed(1) + '%' : '—';
+  const volPct = m.estimated_volatility_pct || (m.estimated_volatility != null ? (m.estimated_volatility * 100).toFixed(1) + '%' : '—');
+
   const items = [
-    { label:'Sharpe Ratio', value: fmt(m.sharpe_ratio),                                     color:'#10b981' },
-    { label:'2yr Hist. Return',  value: m.expected_return_pct  || fmt(m.expected_return,  true),  color:'#3b82f6' },
-    { label:'Volatility',   value: m.volatility_pct       || fmt(m.volatility,       true),  color:'#f59e0b' },
+    { label:'Backtested Sharpe', value: fmt(m.backtested_sharpe),  color:'#10b981' },
+    { label:'p50 Return (OOS)',  value: p50,                        color:'#3b82f6' },
+    { label:'Est. Volatility',   value: volPct,                     color:'#f59e0b' },
   ];
 
   document.getElementById('metricsContainer').innerHTML = items.map((item, i) => `
     <div style="text-align:center;" class="fade-in" style="animation-delay:${i*0.1}s;">
       <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:${item.color};letter-spacing:-0.02em;margin-bottom:5px;">${item.value}</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#3a3a3a;">${item.label}</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#606060;">${item.label}</div>
     </div>`).join('');
+}
+
+function renderSector(weights, meta) {
+  const card = document.getElementById('sectorCard');
+  if (!meta || !Object.keys(meta).length) { card.style.display = 'none'; return; }
+
+  // Aggregate optimized weights by sector
+  const sMap = {};
+  for (const [ticker, w] of Object.entries(weights)) {
+    const s = meta[ticker]?.sector || 'Other';
+    sMap[s] = (sMap[s] || 0) + w;
+  }
+  const sorted = Object.entries(sMap).sort((a, b) => b[1] - a[1]);
+
+  // SVG donut
+  const cx = 80, cy = 80, R = 70, ri = 44, GAP = 0.035;
+  const pt = (a, r) => `${(cx + r * Math.cos(a)).toFixed(2)},${(cy + r * Math.sin(a)).toFixed(2)}`;
+  let angle = -Math.PI / 2, paths = '';
+
+  sorted.forEach(([, w], i) => {
+    const sweep = w * 2 * Math.PI;
+    if (sweep < GAP * 1.5) { angle += sweep; return; }
+    const a0 = angle + GAP / 2, a1 = angle + sweep - GAP / 2;
+    const lg = (a1 - a0 > Math.PI) ? 1 : 0;
+    paths += `<path d="M${pt(a0,R)} A${R},${R},0,${lg},1,${pt(a1,R)} L${pt(a1,ri)} A${ri},${ri},0,${lg},0,${pt(a0,ri)} Z" fill="${BAR_COLORS[i % BAR_COLORS.length]}"/>`;
+    angle += sweep;
+  });
+
+  const legend = sorted.map(([sector, w], i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #111;">
+      <span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:${BAR_COLORS[i % BAR_COLORS.length]};flex-shrink:0;"></span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#808080;flex:1;">${sector}</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#e4e4e4;flex-shrink:0;">${Math.round(w * 100)}%</span>
+    </div>`).join('');
+
+  document.getElementById('sectorContainer').innerHTML =
+    `<svg width="160" height="160" viewBox="0 0 160 160" style="flex-shrink:0;">${paths}</svg>` +
+    `<div style="flex:1;min-width:140px;">${legend}</div>`;
+
+  card.style.display = '';
 }
 
 function renderNarrative(raw) {

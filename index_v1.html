@@ -160,7 +160,7 @@
       font-size: 10px;
       background: #0a0a0a;
       border: 1px solid var(--border);
-      color: #6b9ab8;
+      color: #3d4f5c;
       padding: 2px 8px;
       border-radius: 4px;
       display: inline-block;
@@ -281,7 +281,7 @@
 
   <div class="fade-up d1 inline-flex items-center gap-2 border border-[#1c1c1c] rounded-full px-4 py-1.5 text-[11px] text-[#909090] mb-10 font-mono">
     <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full pulse"></span>
-    ASX200 · 179 equities · refreshed 4:30 PM AEDT daily
+    ASX market data · refreshed 4:15 PM AEDT daily
   </div>
 
   <div class="fade-up d1 flex justify-center mb-8">
@@ -313,19 +313,19 @@
 
   <div class="fade-up d5 grid grid-cols-3 gap-3 max-w-[420px] mx-auto">
     <div class="metric">
-      <div class="text-emerald-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">0.47</div>
-      <div class="text-[#808080] text-[11px]">Backtested Sharpe</div>
+      <div class="text-emerald-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">1.92</div>
+      <div class="text-[#808080] text-[11px]">Sharpe Ratio</div>
     </div>
     <div class="metric">
-      <div class="text-blue-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">13.5%</div>
-      <div class="text-[#808080] text-[11px]">p50 Annual Return</div>
+      <div class="text-blue-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">11.4%</div>
+      <div class="text-[#808080] text-[11px]">2yr Hist. Return</div>
     </div>
     <div class="metric">
-      <div class="text-amber-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">64%</div>
-      <div class="text-[#808080] text-[11px]">Sharpe Win Rate</div>
+      <div class="text-amber-400 text-[22px] font-semibold font-mono tracking-tight mb-0.5">14.2%</div>
+      <div class="text-[#808080] text-[11px]">Volatility</div>
     </div>
   </div>
-  <p class="font-mono text-[11px] text-[#686868] mt-3">// Monte Carlo · 50-sample · 2025–2026 OOS</p>
+  <p class="font-mono text-[11px] text-[#222] mt-3">// sample · BHP.AX · CBA.AX · CSL.AX</p>
 
 </div>
 
@@ -343,7 +343,7 @@
 <div class="border-y border-[#1c1c1c] bg-[#0a0a0a] py-4">
   <div class="max-w-6xl mx-auto px-6">
     <div class="flex flex-wrap items-center justify-center md:justify-between gap-4 sm:gap-6 text-[11px] font-mono text-[#737373]">
-      <span>179 ASX equities · full ASX200</span>
+      <span>20 ASX equities · top market cap</span>
       <span class="hidden md:block text-[#1c1c1c]">|</span>
       <span>504 trading days · 2-year horizon</span>
       <span class="hidden md:block text-[#1c1c1c]">|</span>
@@ -469,13 +469,9 @@
     <span class="k">"CSL.AX"</span><span class="p">:</span> <span class="n">0.25</span>
   <span class="p">},</span>
   <span class="k">"metrics"</span><span class="p">: {</span>
-    <span class="k">"estimated_volatility_pct"</span><span class="p">:</span> <span class="s">"11.5%"</span><span class="p">,</span>
-    <span class="k">"backtested_return_range"</span><span class="p">: {</span>
-      <span class="k">"p25"</span><span class="p">:</span> <span class="n">0.051</span><span class="p">,</span> <span class="k">"p50"</span><span class="p">:</span> <span class="n">0.135</span><span class="p">,</span> <span class="k">"p75"</span><span class="p">:</span> <span class="n">0.192</span>
-    <span class="p">},</span>
-    <span class="k">"backtested_sharpe"</span><span class="p">:</span>         <span class="n">0.47</span><span class="p">,</span>
-    <span class="k">"portfolio_type"</span><span class="p">:</span>           <span class="s">"diversified"</span><span class="p">,</span>
-    <span class="k">"recommended_rebalancing_label"</span><span class="p">:</span> <span class="s">"Quarterly (every 3 months)"</span>
+    <span class="k">"expected_return_pct"</span><span class="p">:</span> <span class="s">"11.4%"</span><span class="p">,</span>
+    <span class="k">"volatility_pct"</span><span class="p">:</span>      <span class="s">"14.2%"</span><span class="p">,</span>
+    <span class="k">"sharpe_ratio"</span><span class="p">:</span>         <span class="n">1.92</span>
   <span class="p">},</span>
   <span class="k">"ai_summary"</span><span class="p">:</span> <span class="s">"- **Risk:** Materials overweight..."</span><span class="p">,</span>
   <span class="k">"metadata"</span><span class="p">: {</span>
@@ -526,7 +522,7 @@
           if the key is missing.
         </p>
         <div class="border border-[#161616] rounded-[6px] p-4 font-mono text-[11.5px] leading-[1.9] bg-[#070707]">
-          <div class="text-[#606060] mb-1">// ai_summary output</div>
+          <div class="text-[#222] mb-1">// ai_summary output</div>
           <div><span class="text-blue-500">Risk:</span> <span class="text-[#909090]">Commodities at cycle peak...</span></div>
           <div><span class="text-emerald-500">Opportunity:</span> <span class="text-[#909090]">Domestic rate tailwind...</span></div>
           <div><span class="text-amber-500">Action:</span> <span class="text-[#909090]">Trim BHP 5% on strength...</span></div>
@@ -560,7 +556,7 @@
           <span class="chip">RIO</span>
           <span class="chip">FMG</span>
           <span class="chip">TLS</span>
-          <span class="font-mono text-[10px] text-[#606060] px-2 py-0.5">+167 more across all GICS sectors</span>
+          <span class="font-mono text-[10px] text-[#282828] px-2 py-0.5">+8 more</span>
         </div>
       </div>
 
@@ -581,16 +577,16 @@
         </p>
         <div class="space-y-2.5 font-mono text-[11.5px]">
           <div class="flex items-center justify-between">
-            <span class="text-[#686868]">0.0 – 0.3</span>
+            <span class="text-[#686868]">risk_tolerance: 0.0</span>
             <span class="text-[#909090]">→ min volatility</span>
           </div>
           <div class="flex items-center justify-between">
-            <span class="text-blue-500">0.3 – 0.7</span>
-            <span class="text-blue-400">→ efficient frontier ←</span>
+            <span class="text-blue-500">risk_tolerance: 0.7</span>
+            <span class="text-blue-400">→ blended target ←</span>
           </div>
           <div class="flex items-center justify-between">
-            <span class="text-amber-500">0.7 – 1.0</span>
-            <span class="text-amber-400">→ growth overshoot</span>
+            <span class="text-[#686868]">risk_tolerance: 1.0</span>
+            <span class="text-[#909090]">→ max Sharpe</span>
           </div>
         </div>
       </div>
@@ -646,92 +642,6 @@
 </section>
 
 
-
-
-<!-- ══════════════════════════════════════════════════════════════
-     VALIDATION
-════════════════════════════════════════════════════════════════ -->
-<section class="py-16 md:py-28 border-b border-[#1c1c1c] bg-[#0a0a0a]">
-  <div class="max-w-6xl mx-auto px-6">
-
-    <div class="mb-14">
-      <p class="text-[11px] font-mono text-[#7a7a7a] uppercase tracking-[0.14em] mb-3">03 — Empirically Validated</p>
-      <h2 class="text-[32px] md:text-[42px] text-white leading-tight mb-5">
-        Not just theory.<br/>Backtested across real regimes.
-      </h2>
-      <p class="text-[#808080] max-w-[540px] text-[15px] leading-relaxed">
-        Every metric returned by the API is sourced from out-of-sample Monte Carlo
-        simulation — 50 random portfolios per category, quarterly rebalancing,
-        0.10% round-trip transaction costs. Validated across six market regimes
-        from 2020 to 2026.
-      </p>
-    </div>
-
-    <!-- Stat row -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-12">
-      <div class="metric flex flex-col justify-center items-center gap-1.5">
-        <div class="text-emerald-400 text-[22px] font-semibold font-mono tracking-tight leading-none">55–68%</div>
-        <div class="text-white text-[12px] font-medium">Sharpe Win Rate</div>
-        <div class="text-[#606060] text-[11px] leading-relaxed">vs equal-weight baseline, cross-sector portfolios, quarterly rebalancing</div>
-      </div>
-      <div class="metric flex flex-col justify-center items-center gap-1.5">
-        <div class="text-blue-400 text-[22px] font-semibold font-mono tracking-tight leading-none">+2–5pp</div>
-        <div class="text-white text-[12px] font-medium">Mean Return Alpha</div>
-        <div class="text-[#606060] text-[11px] leading-relaxed">annual return above equal-weight across 50-sample simulations</div>
-      </div>
-      <div class="metric flex flex-col justify-center items-center gap-1.5">
-        <div class="text-amber-400 text-[22px] font-semibold font-mono tracking-tight leading-none">93–99%</div>
-        <div class="text-white text-[12px] font-medium">Volatility Win Rate</div>
-        <div class="text-[#606060] text-[11px] leading-relaxed">conservative portfolios (RT ≤ 0.3) — robust across COVID crash and bull markets</div>
-      </div>
-      <div class="metric flex flex-col justify-center items-center gap-1.5">
-        <div class="text-[#a78bfa] text-[22px] font-semibold font-mono tracking-tight leading-none">3 yrs</div>
-        <div class="text-white text-[12px] font-medium">OOS Validation</div>
-        <div class="text-[#606060] text-[11px] leading-relaxed">2023–2026 out-of-sample, across crash recovery, bull, bear, and momentum regimes</div>
-      </div>
-    </div>
-
-    <!-- Two column: methodology note + intra-sector callout -->
-    <div class="grid md:grid-cols-2 gap-4">
-
-      <div class="card p-5 sm:p-7">
-        <h3 class="font-semibold text-white mb-3 text-[14px] tracking-[-0.01em]">How the metrics are derived</h3>
-        <p class="text-[13px] text-[#929292] leading-relaxed mb-4">
-          The optimizer's in-sample Sharpe ratio is deliberately not exposed in the
-          response — it overstates true performance because it optimises against its
-          own signal. Instead, <code class="font-mono text-[11px] text-[#808080]">backtested_sharpe</code>
-          and <code class="font-mono text-[11px] text-[#808080]">backtested_return_range</code>
-          come from 50 randomly drawn portfolios in the same risk band,
-          tested on data the optimizer never saw.
-        </p>
-        <div class="font-mono text-[11.5px] space-y-1.5 text-[#909090]">
-          <div><span class="text-blue-400">conservative (RT 0–0.3)</span> · p50: 13.2% · Sharpe: 0.47</div>
-          <div><span class="text-blue-400">balanced (RT 0.3–0.7)</span> · p50: 13.5% · Sharpe: 0.47</div>
-          <div><span class="text-amber-500">growth (RT 0.7–1.0)</span>  · p50: 12.8% · Sharpe: 0.44</div>
-        </div>
-      </div>
-
-      <div class="card p-5 sm:p-7">
-        <h3 class="font-semibold text-white mb-3 text-[14px] tracking-[-0.01em]">Diversification signal detection</h3>
-        <p class="text-[13px] text-[#929292] leading-relaxed mb-4">
-          The API automatically classifies every portfolio as
-          <code class="font-mono text-[11px] text-[#808080]">"diversified"</code> or
-          <code class="font-mono text-[11px] text-[#808080]">"intra_sector"</code>
-          based on average pairwise correlation. Single-sector portfolios (e.g. all banks,
-          all miners) see only 16–26% optimizer win rate — returns are driven by sector
-          performance, not weights. When detected, a warning is appended and the
-          response metrics reflect realistic intra-sector expectations.
-        </p>
-        <div class="font-mono text-[11.5px] space-y-1.5">
-          <div class="text-emerald-700">avg correlation &lt; 0.60 → "diversified"</div>
-          <div class="text-amber-700">avg correlation ≥ 0.60 → "intra_sector" + warning</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
 <!-- ══════════════════════════════════════════════════════════════
      DEVELOPER FIRST
 ════════════════════════════════════════════════════════════════ -->
@@ -742,7 +652,7 @@
 
       <!-- Left: copy -->
       <div>
-        <p class="text-[11px] font-mono text-[#7a7a7a] uppercase tracking-[0.14em] mb-3">04 — Developer First</p>
+        <p class="text-[11px] font-mono text-[#7a7a7a] uppercase tracking-[0.14em] mb-3">03 — Developer First</p>
         <h2 class="text-[32px] md:text-[42px] text-white leading-tight mb-6">
           Built for engineers.<br/>Trusted by advisers.
         </h2>
@@ -812,9 +722,8 @@
           <div class="dot" style="background:#28c840"></div>
           <span class="ml-3 text-[11px] text-[#565656] font-mono">shell</span>
         </div>
-        <div class="terminal-body text-[12px]"><span class="text-[#505050]">$</span> <span class="text-[#808080]">curl</span> <span class="s">-X POST</span> <span class="text-[#7da8b8]">https://api.frontir.app/api/v1/optimize</span> \
+        <div class="terminal-body text-[12px]"><span class="text-[#505050]">$</span> <span class="text-[#808080]">curl</span> <span class="s">-X POST</span> <span class="text-[#7da8b8]">https://api.frontir.io/api/v1/optimize</span> \
   -H <span class="s">"Content-Type: application/json"</span> \
-  -H <span class="s">"X-API-Key: YOUR_POLAR_KEY"</span> \
   -d <span class="s">'{</span>
     <span class="k">"portfolio"</span>: [
       {<span class="k">"ticker"</span>: <span class="s">"CBA.AX"</span>, <span class="k">"amount"</span>: <span class="n">20000</span>},
@@ -832,7 +741,7 @@
 <span class="c"># ← Compliance metadata · Disclaimer</span>
 <span class="c"># ──────────────────────────────────────────</span>
 
-<span class="cm">✓</span> <span class="text-[#4a8a5a]">backtested_sharpe: 0.47</span>
+<span class="cm">✓</span> <span class="text-[#4a8a5a]">sharpe_ratio: 1.92</span>
 <span class="cm">✓</span> <span class="text-[#4a8a5a]">ai_summary generated</span>
 <span class="cm">✓</span> <span class="text-[#4a8a5a]">disclaimer included</span>
 </div>
@@ -848,31 +757,31 @@
 ════════════════════════════════════════════════════════════════ -->
 <section class="py-14 md:py-20 border-b border-[#1c1c1c] bg-[#0a0a0a]">
   <div class="max-w-6xl mx-auto px-6">
-    <p class="text-[11px] font-mono text-[#7a7a7a] uppercase tracking-[0.14em] mb-10">Architecture · Enterprise Path</p>
+    <p class="text-[11px] font-mono text-[#505050] uppercase tracking-[0.14em] mb-10">Architecture · Enterprise Path</p>
     <div class="grid md:grid-cols-4 gap-4">
 
-      <div class="border border-[#1c1c1c] rounded-[6px] p-5">
-        <p class="text-[11px] font-mono text-[#3a7a50] mb-2">Live</p>
-        <p class="text-[13px] font-medium text-white mb-1">PostgreSQL · Railway</p>
-        <p class="text-[12px] text-[#808080]">YahooQuery · full ASX200 · incremental pipeline</p>
+      <div class="border border-[#141414] rounded-[6px] p-5">
+        <p class="text-[11px] font-mono text-[#505050] mb-2">Current</p>
+        <p class="text-[13px] font-medium text-[#808080] mb-1">SQLite + in-process</p>
+        <p class="text-[12px] text-[#606060]">YahooQuery · 20 ASX tickers · single worker</p>
       </div>
 
-      <div class="border border-[#1c1c1c] rounded-[6px] p-5">
-        <p class="text-[11px] font-mono text-[#7a7a7a] mb-2">v2 target</p>
-        <p class="text-[13px] font-medium text-white mb-1">TimescaleDB + Redis</p>
-        <p class="text-[12px] text-[#808080]">Time-series optimised · shared cache across workers</p>
+      <div class="border border-[#141414] rounded-[6px] p-5">
+        <p class="text-[11px] font-mono text-[#3a7a50] mb-2">v2 target</p>
+        <p class="text-[13px] font-medium text-[#3d6b4a] mb-1">PostgreSQL + TimescaleDB</p>
+        <p class="text-[12px] text-[#4a8a5a]">Time-series optimised, shared Redis cache</p>
       </div>
 
-      <div class="border border-[#1c1c1c] rounded-[6px] p-5">
-        <p class="text-[11px] font-mono text-[#7a7a7a] mb-2">Data</p>
-        <p class="text-[13px] font-medium text-white mb-1">Incremental append</p>
-        <p class="text-[12px] text-[#808080]">Daily delta only · corporate actions table</p>
+      <div class="border border-[#141414] rounded-[6px] p-5">
+        <p class="text-[11px] font-mono text-[#505050] mb-2">Data</p>
+        <p class="text-[13px] font-medium text-[#808080] mb-1">Incremental append</p>
+        <p class="text-[12px] text-[#606060]">Daily delta only · corporate actions table</p>
       </div>
 
-      <div class="border border-[#1c1c1c] rounded-[6px] p-5">
-        <p class="text-[11px] font-mono text-[#7a7a7a] mb-2">Scale</p>
-        <p class="text-[13px] font-medium text-white mb-1">Global equities</p>
-        <p class="text-[12px] text-[#808080]">Polygon.io · Celery/Redis · 1000+ tickers</p>
+      <div class="border border-[#141414] rounded-[6px] p-5">
+        <p class="text-[11px] font-mono text-[#505050] mb-2">Scale</p>
+        <p class="text-[13px] font-medium text-[#808080] mb-1">Global equities</p>
+        <p class="text-[12px] text-[#606060]">Polygon.io · Celery/Redis · 1000+ tickers</p>
       </div>
 
     </div>
@@ -894,8 +803,8 @@
       Start optimising<br/>in minutes.
     </h2>
     <p class="text-[#808080] text-[16px] mb-10 max-w-md mx-auto">
-      Integrate portfolio intelligence in minutes.
-      Full ASX200 coverage, backtested metrics, and AI narratives — one endpoint.
+      Self-hostable. MIT-licensed. No API key required
+      for the core Efficient Frontier engine.
     </p>
     <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
       <a href="/docs" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-black text-[13px] font-semibold px-7 py-[11px] rounded-[6px] hover:bg-[#ebebeb] transition-colors">
@@ -921,14 +830,14 @@
         <path d="M6 5h8M6 9.5h5.5" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
         <path d="M6 14l3 3 4-5 3 2.5" stroke="#93c5fd" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span class="font-mono text-[12px] text-[#606060]">Frontir © 2026</span>
+      <span class="font-mono text-[12px] text-[#2a2a2a]">Frontir © 2026</span>
     </div>
 
-    <div class="flex flex-wrap items-center justify-center gap-5 text-[11px] text-[#606060] font-mono">
+    <div class="flex flex-wrap items-center justify-center gap-5 text-[11px] text-[#2a2a2a] font-mono">
       <a href="/docs"         class="hover:text-[#808080] transition-colors">Docs</a>
       <a href="/api/v1/health" class="hover:text-[#808080] transition-colors">Health</a>
       <a href="https://github.com" class="hover:text-[#808080] transition-colors">GitHub</a>
-      <span class="text-[#444444]">·</span>
+      <span class="text-[#181818]">·</span>
       <span>PyPortfolioOpt · FastAPI · GPT-4o-mini</span>
     </div>
 
